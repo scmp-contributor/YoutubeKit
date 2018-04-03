@@ -78,7 +78,7 @@ open class YTSwiftyPlayer: WKWebView {
     public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
         let configuration = defaultConfiguration()
         let userController = WKUserContentController()
-        configuration.userController = userController
+        configuration.userContentController = userController
       
         super.init(frame: frame, configuration: configuration)
       
@@ -93,7 +93,7 @@ open class YTSwiftyPlayer: WKWebView {
     public init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = []) {
         let configuration = defaultConfiguration()
         let userController = WKUserContentController()
-        configuration.userController = userController
+        configuration.userContentController = userController
       
         super.init(frame: frame, configuration: configuration)
       
