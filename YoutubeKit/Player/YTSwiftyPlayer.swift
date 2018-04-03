@@ -76,14 +76,30 @@ open class YTSwiftyPlayer: WKWebView {
     ]
     
     public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
-        super.init(frame: frame, configuration: defaultConfiguration())
-        
+        let configuration = defaultConfiguration()
+        let userController = WKUserContentController()
+        configuration.userController = userController
+      
+        super.init(frame: frame, configuration: configuration)
+      
+        callbackHandlers.forEach {
+          userController.add(self, name: $0.rawValue)
+        }
+
         commonInit()
         self.playerVars = playerVars
     }
     
     public init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = []) {
-        super.init(frame: frame, configuration: defaultConfiguration())
+        let configuration = defaultConfiguration()
+        let userController = WKUserContentController()
+        configuration.userController = userController
+      
+        super.init(frame: frame, configuration: configuration)
+      
+        callbackHandlers.forEach {
+          userController.add(self, name: $0.rawValue)
+        }
         
         commonInit()
         guard !playerVars.isEmpty else { return }
@@ -243,16 +259,7 @@ open class YTSwiftyPlayer: WKWebView {
     }
     
     // MARK: - Private Methods
-    
-    private func defaultConfiguration() -> WKWebViewConfiguration {
-        let config = WKWebViewConfiguration()
-        config.allowsAirPlayForMediaPlayback = true
-        config.allowsInlineMediaPlayback = true
-        config.allowsPictureInPictureMediaPlayback = true
-        config.userContentController = userController
-        return config
-    }
-    
+  
     private func commonInit() {
         scrollView.bounces = false
         scrollView.isScrollEnabled = false
@@ -430,4 +437,12 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
         }
         playerQuality = quality
     }
+}
+
+private func defaultConfiguration() -> WKWebViewConfiguration {
+  let config = WKWebViewConfiguration()
+  config.allowsAirPlayForMediaPlayback = true
+  config.allowsInlineMediaPlayback = true
+  config.allowsPictureInPictureMediaPlayback = true
+  return config
 }
