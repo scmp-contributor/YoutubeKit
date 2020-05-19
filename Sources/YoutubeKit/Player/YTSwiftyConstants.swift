@@ -174,10 +174,7 @@ public enum VideoEmbedParameter {
     
     /// This parameter specifies a comma-separated list of video IDs to play.
     case playlist(String)
-    
-    /// This parameter specifies a video ID to play.
-    case videoID(String)
-    
+
     /// This parameter controls whether videos play inline or fullscreen. Default value is `false`.
     case playsInline(Bool)
     
@@ -224,8 +221,6 @@ public enum VideoEmbedParameter {
             return ("origin", domain as AnyObject)
         case .playlist(let playlist):
             return ("playlist", playlist as AnyObject)
-        case .videoID(let id):
-            return ("videoId", id as AnyObject)
         case .playsInline(let isOn):
             return ("playsinline", isOn.jsValue)
         case .showRelatedVideo(let isShow):

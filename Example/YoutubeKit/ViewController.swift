@@ -22,13 +22,15 @@ final class ViewController: UIViewController {
 
         // Create a new player
         player = YTSwiftyPlayer(
-            frame: CGRect(x: 0, y: 0, width: 640, height: 480),
-            playerVars: [
-                .playsInline(true),
-                .videoID("_6u6UrtXUEI"),
-                .loopVideo(true),
-                .showRelatedVideo(false)
-            ])
+          frame: CGRect(x: 0, y: 0, width: 640, height: 480),
+          playerVars: [
+            .playsInline(true),
+            .loopVideo(true),
+            .showRelatedVideo(false)
+          ],
+          configuration: GeneralPlayerConfiguration(videoID: "_6u6UrtXUEI",
+                                                    referrer: URL(string: "https://www.youtube.com"),
+                                                    viewportInitialScale: 1))
 
         // Enable auto playback when video is loaded
         player.autoplay = true

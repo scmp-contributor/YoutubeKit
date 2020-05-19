@@ -60,6 +60,7 @@ open class YTSwiftyPlayer: WKWebView {
         .onError,
         .onUpdateCurrentTime
     ]
+    private let playerConfiguration: YTSwiftyPlayerConfiguration
     
     static private var defaultConfiguration: WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
@@ -69,10 +70,12 @@ open class YTSwiftyPlayer: WKWebView {
         return config
     }
     
-    public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
+    public init(frame: CGRect = .zero, playerVars: [String: AnyObject], configuration: YTSwiftyPlayerConfiguration) {
         let config = YTSwiftyPlayer.defaultConfiguration
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
+
+        self.playerConfiguration = configuration
         
         super.init(frame: frame, configuration: config)
         
@@ -85,26 +88,8 @@ open class YTSwiftyPlayer: WKWebView {
         self.playerVars = playerVars
     }
     
-    public init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = []) {
-        let config = YTSwiftyPlayer.defaultConfiguration
-        let userContentController = WKUserContentController()
-        config.userContentController = userContentController
-
-        super.init(frame: frame, configuration: config)
-
-        callbackHandlers.forEach {
-            userContentController.add(self, name: $0.rawValue)
-        }
-
-        commonInit()
-
-        guard !playerVars.isEmpty else { return }
-        var params: [String: AnyObject] = [:]
-        playerVars.forEach {
-            let property = $0.property
-            params[property.key] = property.value
-        }
-        self.playerVars = params
+    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], configuration: YTSwiftyPlayerConfiguration) {
+        self.init(frame: frame, playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars), configuration: configuration)
     }
     
     required public init?(coder: NSCoder) {
@@ -116,12 +101,7 @@ open class YTSwiftyPlayer: WKWebView {
     }
     
     public func setPlayerParameters(_ parameters: [VideoEmbedParameter]) {
-        var params: [String: AnyObject] = [:]
-        parameters.forEach {
-            let property = $0.property
-            params[property.key] = property.value
-        }
-        self.playerVars = params
+        self.playerVars = YTSwiftyPlayer.convertPlayerParameters(parameters)
     }
     
     public func playVideo() {
@@ -219,9 +199,6 @@ open class YTSwiftyPlayer: WKWebView {
     }
 
     public func loadPlayer() {
-        let currentBundle = Bundle(for: YTSwiftyPlayer.self)
-        let path = currentBundle.path(forResource: "player", ofType: "html")!
-        let htmlString = try? String(contentsOfFile: path, encoding: String.Encoding.utf8)
         let events: [String: AnyObject] = {
             var registerEvents: [String: AnyObject] = [:]
             callbackHandlers.forEach {
@@ -237,16 +214,14 @@ open class YTSwiftyPlayer: WKWebView {
             "playerVars": playerVars as AnyObject,
             ]
         
-        if let videoID = playerVars["videoId"] {
-            parameters["videoId"] = videoID
+        if let videoID = playerConfiguration.accept(visitor: YTSwiftyPlayerVideoIDProvider()) {
+            parameters["videoId"] = videoID as AnyObject
         }
-        
-        guard let json = try? JSONSerialization.data(withJSONObject: parameters, options: []),
-            let jsonString = String(data: json, encoding: String.Encoding.utf8),
-            let html = htmlString?.replacingOccurrences(of: "%@", with: jsonString),
-            let baseUrl = URL(string: "https://www.youtube.com") else { return }
-        
-        loadHTMLString(html, baseURL: baseUrl)
+
+        let htmlProvider = YTSwiftyPlayerHTMLProvider(playerParameters: parameters)
+        guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
+
+        loadHTMLString(html, baseURL: playerConfiguration.referrer)
     }
     
     // MARK: - Private Methods
@@ -269,6 +244,15 @@ open class YTSwiftyPlayer: WKWebView {
             callbackHandler?(result)
         }
     }
+
+  private static func convertPlayerParameters(_ parameters: [VideoEmbedParameter]) -> [String: AnyObject] {
+      var params: [String: AnyObject] = [:]
+      parameters.forEach {
+          let property = $0.property
+          params[property.key] = property.value
+      }
+      return params
+  }
 }
 
 extension YTSwiftyPlayer: WKScriptMessageHandler {
