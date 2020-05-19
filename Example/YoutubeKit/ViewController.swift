@@ -21,16 +21,20 @@ final class ViewController: UIViewController {
         // This is a bug of WKWebView in iOS13 and that will be fixed in 13.4 release.
 
         // Create a new player
+//        let config = GeneralPlayerConfiguration(videoID: "_6u6UrtXUEI",
+//                                                referrer: URL(string: "https://www.youtube.com"),
+//                                                viewportInitialScale: 1)
+        let config = SmartEmbedsPlayerConfiguration(channelIDs: ["UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"],
+                                                    referrer: URL(string: "https://www.scmp.com/news/china/politics/article/3084573/china-legislature-meets-set-tone-global-role-post-pandemic"),
+                                                    viewportInitialScale: 1)
         player = YTSwiftyPlayer(
           frame: CGRect(x: 0, y: 0, width: 640, height: 480),
           playerVars: [
             .playsInline(true),
-            .loopVideo(true),
+            .autoplay(true),
             .showRelatedVideo(false)
           ],
-          configuration: GeneralPlayerConfiguration(videoID: "_6u6UrtXUEI",
-                                                    referrer: URL(string: "https://www.youtube.com"),
-                                                    viewportInitialScale: 1))
+          configuration: config)
 
         // Enable auto playback when video is loaded
         player.autoplay = true

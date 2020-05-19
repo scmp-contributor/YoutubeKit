@@ -11,21 +11,59 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
   typealias ResultType = String?
 
   private struct ReplacementKeys {
-    static let playerParameters = "{player-parameters}"
+    static let playerOptions = "{player-options}"
     static let viewportInitialScale = "{viewport-initial-scale}"
+    static let iframeSrcQueryString = "{iframe-src-query-string}"
   }
 
+  let playerOptions: [String: AnyObject]
   let playerParameters: [String: AnyObject]
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "player") else { return nil }
 
     do {
-      let json = try JSONSerialization.data(withJSONObject: playerParameters, options: [])
+      let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
       guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
 
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerParameters, with: jsonString)
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
+      return htmlString
+    } catch {
+      return nil
+    }
+  }
+
+  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> String? {
+    guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "smart-embeds-player") else { return nil }
+
+    do {
+      let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
+      guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
+
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
+
+      // Create query strings for the iframe src url
+      var paramsForQueryStrings = playerParameters.filter({ key, val in
+        return key == VideoEmbedParameter.playsInline(true).key || key == VideoEmbedParameter.autoplay(true).key
+      })
+
+      // Set enable js api
+      paramsForQueryStrings["enablejsapi"] = true as AnyObject
+
+      // Set channel IDs
+      paramsForQueryStrings["channels"] = configuration.channelIDs.joined(separator: ",") as AnyObject
+
+      // Set blocked video IDs
+      if !configuration.blockedVideoIDs.isEmpty {
+        paramsForQueryStrings["block_videos"] = configuration.blockedVideoIDs.joined(separator: ",") as AnyObject
+      }
+
+      var urlComponents = URLComponents()
+      urlComponents.queryItems = paramsForQueryStrings.map({ URLQueryItem(name: $0.0, anyObjectValue: $0.1) })
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
+
       return htmlString
     } catch {
       return nil
@@ -42,5 +80,24 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
     } catch {
       return nil
     }
+  }
+}
+
+private extension URLQueryItem {
+  init(name: String, anyObjectValue: AnyObject) {
+    let value: String?
+    if let val = anyObjectValue as? String {
+      value = val
+    } else if let val = anyObjectValue as? Bool {
+      value = val ? "1" : "0"
+    } else if let val = anyObjectValue as? Int {
+      value = String(format: "%d", val)
+    } else if let val = anyObjectValue as? Double {
+      value = String(format: "%.2f", val)
+    } else {
+      value = nil
+    }
+
+    self.init(name: name, value: value)
   }
 }

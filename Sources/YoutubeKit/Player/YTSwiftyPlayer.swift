@@ -218,7 +218,7 @@ open class YTSwiftyPlayer: WKWebView {
             parameters["videoId"] = videoID as AnyObject
         }
 
-        let htmlProvider = YTSwiftyPlayerHTMLProvider(playerParameters: parameters)
+        let htmlProvider = YTSwiftyPlayerHTMLProvider(playerOptions: parameters, playerParameters: playerVars)
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
 
         loadHTMLString(html, baseURL: playerConfiguration.referrer)

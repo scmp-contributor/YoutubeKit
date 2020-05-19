@@ -14,6 +14,8 @@ public protocol YTSwiftyPlayerConfiguration {
   func accept<VisitorType: YTSwiftyPlayerConfigurationVisitor>(visitor: VisitorType) -> VisitorType.ResultType
 }
 
+// MARK: -
+
 public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let videoID: String
   public let referrer: URL?
@@ -32,10 +34,34 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   }
 }
 
+// MARK: -
+
+public struct SmartEmbedsPlayerConfiguration: YTSwiftyPlayerConfiguration {
+  public let channelIDs: [String]
+  public let blockedVideoIDs: [String]
+  public let referrer: URL?
+  public let viewportInitialScale: CGFloat
+
+  public init(channelIDs: [String],
+              blockedVideoIDs: [String] = [],
+              referrer: URL? = nil,
+              viewportInitialScale: CGFloat = 1) {
+    self.channelIDs = channelIDs
+    self.blockedVideoIDs = blockedVideoIDs
+    self.referrer = referrer ?? URL(string: "https://www.youtube.com")
+    self.viewportInitialScale = viewportInitialScale
+  }
+
+  public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {
+    return visitor.forSmartEmbedsPlayer(self)
+  }
+}
+
 // MARK: - Visitor
 
 public protocol YTSwiftyPlayerConfigurationVisitor {
   associatedtype ResultType
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> ResultType
+  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> ResultType
 }

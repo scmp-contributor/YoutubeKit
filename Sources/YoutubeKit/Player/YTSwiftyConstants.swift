@@ -186,47 +186,94 @@ public enum VideoEmbedParameter {
     
     /// The player parameter.
     public var property: (key: String, value: AnyObject) {
+        let key = self.key
         switch self {
         case .autoplay(let isOn):
-            return ("autoplay", isOn.jsValue)
+            return (key, isOn.jsValue)
         case .alwaysShowCaption(let isOn):
-            return ("cc_load_policy", isOn.jsValue)
+            return (key, isOn.jsValue)
         case .progressBarColor(let color):
-            return ("color", color.rawValue as AnyObject)
+            return (key, color.rawValue as AnyObject)
         case .showControls(let controls):
-            return ("controls", controls.rawValue as AnyObject)
+            return (key, controls.rawValue as AnyObject)
         case .disableKeyboardControl(let isDisable):
-            return ("disablekb", isDisable.jsValue)
+            return (key, isDisable.jsValue)
         case .enableJavaScriptAPI(let isOn):
-            return ("enablejsapi", isOn.jsValue)
+            return (key, isOn.jsValue)
         case .registerStartTimeAt(let time):
-            return ("start", time as AnyObject)
+            return (key, time as AnyObject)
         case .registerEndTimeAt(let time):
-            return ("end", time as AnyObject)
+            return (key, time as AnyObject)
         case .showFullScreenButton(let isShow):
-            return ("fs", isShow.jsValue)
+            return (key, isShow.jsValue)
         case .playerLanguage(let isoCode):
-            return ("hl", isoCode as AnyObject)
+            return (key, isoCode as AnyObject)
         case .showLoadPolicy(let isShow):
-            return ("iv_load_policy", isShow.jsValue)
+            return (key, isShow.jsValue)
         case .listType(let type):
-            return ("listType", type.rawValue as AnyObject)
+            return (key, type.rawValue as AnyObject)
         case .list(let value):
-            return ("list", value as AnyObject)
+            return (key, value as AnyObject)
         case .loopVideo(let isLoop):
-            return ("loop", isLoop.jsValue)
+            return (key, isLoop.jsValue)
         case .showModestbranding(let isShow):
-            return ("modestbranding", isShow.jsValue)
+            return (key, isShow.jsValue)
         case .origin(let domain):
-            return ("origin", domain as AnyObject)
+            return (key, domain as AnyObject)
         case .playlist(let playlist):
-            return ("playlist", playlist as AnyObject)
+            return (key, playlist as AnyObject)
         case .playsInline(let isOn):
-            return ("playsinline", isOn.jsValue)
+            return (key, isOn.jsValue)
         case .showRelatedVideo(let isShow):
-            return ("rel", isShow.jsValue)
+            return (key, isShow.jsValue)
         case .showInfo(let isShow):
-            return ("showinfo", isShow.jsValue)
+            return (key, isShow.jsValue)
+        }
+    }
+
+    /// The key for the player parameters
+    var key: String {
+        switch self {
+        case .autoplay:
+            return "autoplay"
+        case .alwaysShowCaption:
+            return "cc_load_policy"
+        case .progressBarColor:
+            return "color"
+        case .showControls:
+            return "controls"
+        case .disableKeyboardControl:
+            return "disablekb"
+        case .enableJavaScriptAPI:
+            return "enablejsapi"
+        case .registerStartTimeAt:
+            return "start"
+        case .registerEndTimeAt:
+            return "end"
+        case .showFullScreenButton:
+            return "fs"
+        case .playerLanguage:
+            return "hl"
+        case .showLoadPolicy:
+            return "iv_load_policy"
+        case .listType:
+            return "listType"
+        case .list:
+            return "list"
+        case .loopVideo:
+            return "loop"
+        case .showModestbranding:
+            return "modestbranding"
+        case .origin:
+            return "origin"
+        case .playlist:
+            return "playlist"
+        case .playsInline:
+            return "playsinline"
+        case .showRelatedVideo:
+            return "rel"
+        case .showInfo:
+            return "showinfo"
         }
     }
 }

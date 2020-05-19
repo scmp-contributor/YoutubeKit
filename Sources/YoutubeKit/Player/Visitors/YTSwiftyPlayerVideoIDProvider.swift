@@ -13,4 +13,8 @@ struct YTSwiftyPlayerVideoIDProvider: YTSwiftyPlayerConfigurationVisitor {
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     return configuration.videoID
   }
+
+  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> String? {
+    return nil
+  }
 }

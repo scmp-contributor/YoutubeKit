@@ -52,6 +52,7 @@
 		86F55F9A2473BA56005B0C82 /* YTSwiftyPlayerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F55F982473BA00005B0C82 /* YTSwiftyPlayerConfiguration.swift */; };
 		86F55F9E2473BE12005B0C82 /* YTSwiftyPlayerHTMLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F55F9C2473BDEC005B0C82 /* YTSwiftyPlayerHTMLProvider.swift */; };
 		86F55FA12473CAFC005B0C82 /* YTSwiftyPlayerVideoIDProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F55F9F2473CAC6005B0C82 /* YTSwiftyPlayerVideoIDProvider.swift */; };
+		86F55FA32473D010005B0C82 /* smart-embeds-player.html in Resources */ = {isa = PBXBuildFile; fileRef = 86F55FA22473D010005B0C82 /* smart-embeds-player.html */; };
 		87899F2E1CA25F6A2F39D0AC0846E8D5 /* MyRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4499D19CD3E09BDEC743C2465701138 /* MyRating.swift */; };
 		96A91398CE3E9DBD291A720E721EE674 /* CaptionListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4781F90700BF653618E7295A0FA4B869 /* CaptionListRequest.swift */; };
 		9AFB36107173238FFBB52868985974D3 /* YTSwiftyConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A317B7FB4DDC36A21848C88BC9814E /* YTSwiftyConstants.swift */; };
@@ -167,6 +168,7 @@
 		86F55F982473BA00005B0C82 /* YTSwiftyPlayerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTSwiftyPlayerConfiguration.swift; sourceTree = "<group>"; };
 		86F55F9C2473BDEC005B0C82 /* YTSwiftyPlayerHTMLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTSwiftyPlayerHTMLProvider.swift; sourceTree = "<group>"; };
 		86F55F9F2473CAC6005B0C82 /* YTSwiftyPlayerVideoIDProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTSwiftyPlayerVideoIDProvider.swift; sourceTree = "<group>"; };
+		86F55FA22473D010005B0C82 /* smart-embeds-player.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "smart-embeds-player.html"; path = "Sources/YoutubeKit/smart-embeds-player.html"; sourceTree = "<group>"; };
 		887A608F83AC52697B716D2A28EECFD3 /* HTTPMethod.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		89A317B7FB4DDC36A21848C88BC9814E /* YTSwiftyConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = YTSwiftyConstants.swift; sourceTree = "<group>"; };
 		8CB95F3B81563FFE2521DAC3778725A7 /* Pods-YoutubeKit_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-YoutubeKit_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
@@ -530,6 +532,7 @@
 			isa = PBXGroup;
 			children = (
 				97BC3DD52903FACCAA98DDBBA8A14A40 /* player.html */,
+				86F55FA22473D010005B0C82 /* smart-embeds-player.html */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -660,6 +663,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF9BEEEFA8F9DA6DC13D22391F1B2C93 /* player.html in Resources */,
+				86F55FA32473D010005B0C82 /* smart-embeds-player.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
