@@ -31,18 +31,18 @@ final class ViewController: UIViewController {
           frame: CGRect(x: 0, y: 0, width: 640, height: 480),
           playerVars: [
             .playsInline(true),
-            .autoplay(true),
             .showRelatedVideo(false)
           ],
           configuration: config)
 
         // Enable auto playback when video is loaded
-        player.autoplay = true
+        player.autoplay = false
         
         // Set player view
         view = player
 
         // Set delegate for detect callback information from the player
+        player.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
         player.delegate = self
         
         // Load video player
