@@ -21,33 +21,38 @@ final class ViewController: UIViewController {
         // This is a bug of WKWebView in iOS13 and that will be fixed in 13.4 release.
 
         // Create a new player
-//        let config = GeneralPlayerConfiguration(videoID: "_6u6UrtXUEI",
-//                                                referrer: URL(string: "https://www.youtube.com"),
-//                                                viewportInitialScale: 1)
-        let config = SmartEmbedsPlayerConfiguration(channelIDs: ["UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"],
-                                                    referrer: URL(string: "https://www.scmp.com/news/china/politics/article/3084573/china-legislature-meets-set-tone-global-role-post-pandemic"),
-                                                    viewportInitialScale: 1)
         player = YTSwiftyPlayer(
           frame: CGRect(x: 0, y: 0, width: 640, height: 480),
           playerVars: [
             .playsInline(true),
             .showRelatedVideo(false)
-          ],
-          configuration: config)
+          ])
 
         // Enable auto playback when video is loaded
         player.autoplay = false
         
         // Set player view
-        view = player
+        view.addSubview(player)
+        NSLayoutConstraint.activate([
+          NSLayoutConstraint(item: player!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0),
+          NSLayoutConstraint(item: player!, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0),
+          NSLayoutConstraint(item: player!, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 640),
+          NSLayoutConstraint(item: player!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 480)
+        ])
 
         // Set delegate for detect callback information from the player
         player.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
         player.delegate = self
         
         // Load video player
-        player.loadPlayer()
-        
+        //        let config = GeneralPlayerConfiguration(videoID: "_6u6UrtXUEI",
+        //                                                referrer: URL(string: "https://www.youtube.com"),
+        //                                                viewportInitialScale: 1)
+        let config = SmartEmbedsPlayerConfiguration(channelIDs: ["UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"],
+                                                    referrer: URL(string: "https://www.scmp.com/news/china/politics/article/3084573/china-legislature-meets-set-tone-global-role-post-pandemic"),
+                                                    viewportInitialScale: 1)
+        player.loadPlayer(with: config)
+
         // (Optional) Create a new request for video list
         // Please make sure to set your API configuration in `AppDelegate`.
         let request = VideoListRequest(part: [.id, .snippet, .contentDetails], filter: .chart)

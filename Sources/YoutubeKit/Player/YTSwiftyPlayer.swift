@@ -60,8 +60,6 @@ open class YTSwiftyPlayer: WKWebView {
         .onError,
         .onUpdateCurrentTime
     ]
-    private let playerConfiguration: YTSwiftyPlayerConfiguration
-    
     static private var defaultConfiguration: WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
         config.allowsAirPlayForMediaPlayback = true
@@ -70,13 +68,11 @@ open class YTSwiftyPlayer: WKWebView {
         return config
     }
     
-    public init(frame: CGRect = .zero, playerVars: [String: AnyObject], configuration: YTSwiftyPlayerConfiguration) {
+    public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
         let config = YTSwiftyPlayer.defaultConfiguration
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
 
-        self.playerConfiguration = configuration
-        
         super.init(frame: frame, configuration: config)
         
         callbackHandlers.forEach {
@@ -88,8 +84,8 @@ open class YTSwiftyPlayer: WKWebView {
         self.playerVars = playerVars
     }
     
-    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], configuration: YTSwiftyPlayerConfiguration) {
-        self.init(frame: frame, playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars), configuration: configuration)
+    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = []) {
+        self.init(frame: frame, playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars))
     }
     
     required public init?(coder: NSCoder) {
@@ -198,7 +194,7 @@ open class YTSwiftyPlayer: WKWebView {
         evaluatePlayerCommand("loadPlaylist('\(ids.joined(separator: ","))')")
     }
 
-    public func loadPlayer() {
+    public func loadPlayer(with playerConfiguration: YTSwiftyPlayerConfiguration) {
         let events: [String: AnyObject] = {
             var registerEvents: [String: AnyObject] = [:]
             callbackHandlers.forEach {
