@@ -16,6 +16,6 @@ YoutubeKit is a video player that fully supports Youtube IFrame API and YoutubeD
 
   s.source_files = 'Sources/**/*.swift'
   s.source           = { :git => 'https://github.com/rinov/YoutubeKit.git', :tag => s.version.to_s }
-  s.resources    = 'Sources/YoutubeKit/player.html'
+  s.resources    = 'Sources/YoutubeKit/player.html', 'Sources/YoutubeKit/smart-embeds-player.html'
 
  end

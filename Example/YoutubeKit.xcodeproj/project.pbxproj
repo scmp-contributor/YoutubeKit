@@ -43,7 +43,7 @@
 		7443AD8A91D67A416885F092 /* Pods-YoutubeKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YoutubeKit_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-YoutubeKit_Tests/Pods-YoutubeKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		89E6337A49B5357D8D13A020 /* Pods-YoutubeKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YoutubeKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-YoutubeKit_Example/Pods-YoutubeKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		94578BBD49A5E3EF992F7E3E /* Pods_YoutubeKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YoutubeKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C96EB60840B44BA73F99FABE /* YoutubeKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = YoutubeKit.podspec; path = ../YoutubeKit.podspec; sourceTree = "<group>"; };
+		C96EB60840B44BA73F99FABE /* YoutubeKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = YoutubeKit.podspec; path = ../YoutubeKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EE4BE7ECF533BB93EECEADE6 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
