@@ -70,7 +70,7 @@ final class ViewController: UIViewController {
     }
 }
 
-extension ViewController: YTSwiftyPlayerDelegate {
+extension ViewController: YTSwiftyPlayerSmartEmbedsDelegate {
     
     func playerReady(_ player: YTSwiftyPlayer) {
         print(#function)
@@ -107,6 +107,10 @@ extension ViewController: YTSwiftyPlayerDelegate {
     }
     
     func youtubeIframeAPIFailedToLoad(_ player: YTSwiftyPlayer) {
+        print(#function)
+    }
+
+    func playerDidFindNoRecommendedVideos(_ player: YTSwiftyPlayer) {
         print(#function)
     }
 }

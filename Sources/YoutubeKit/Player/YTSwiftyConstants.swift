@@ -35,6 +35,7 @@ public enum YTSwiftyPlayerEvent: String {
     case onApiChange                    = "onApiChange"
     case onError                        = "onError"
     case onUpdateCurrentTime            = "onUpdateCurrentTime"
+    case onVideosNotFoundForSmartEmbeds = "onVideosNotFoundForSmartEmbeds"
 }
 
 /**

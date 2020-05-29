@@ -72,7 +72,8 @@ open class YTSwiftyPlayer: WKWebView {
         .onPlaybackRateChange,
         .onApiChange,
         .onError,
-        .onUpdateCurrentTime
+        .onUpdateCurrentTime,
+        .onVideosNotFoundForSmartEmbeds
     ]
     static private var defaultConfiguration: WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
@@ -311,6 +312,8 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
             delegate?.youtubeIframeAPIReady(self)
         case .onYouTubeIframeAPIFailedToLoad:
             delegate?.youtubeIframeAPIFailedToLoad(self)
+        case .onVideosNotFoundForSmartEmbeds:
+            (delegate as? YTSwiftyPlayerSmartEmbedsDelegate)?.playerDidFindNoRecommendedVideos(self)
         }
     }
     
