@@ -15,7 +15,19 @@ import WebKit
  * For more information: [https://developer.apple.com/documentation/webkit/wkwebview](https://developer.apple.com/documentation/webkit/wkwebview)
  */
 open class YTSwiftyPlayer: WKWebView {
-    
+    private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
+      weak var delegate: WKScriptMessageHandler?
+
+      init(delegate: WKScriptMessageHandler) {
+        self.delegate = delegate
+        super.init()
+      }
+
+      func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        delegate?.userContentController(userContentController, didReceive: message)
+      }
+    }
+
     /// The property for easily set auto playback.
     open var autoplay = false
 
@@ -76,7 +88,7 @@ open class YTSwiftyPlayer: WKWebView {
         super.init(frame: frame, configuration: config)
         
         callbackHandlers.forEach {
-            userContentController.add(self, name: $0.rawValue)
+            userContentController.add(ScriptMessageHandler(delegate: self), name: $0.rawValue)
         }
         
         commonInit()
