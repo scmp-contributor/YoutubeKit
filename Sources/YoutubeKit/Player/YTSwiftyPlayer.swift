@@ -58,6 +58,8 @@ open class YTSwiftyPlayer: WKWebView {
     open private(set) var duration: Double?
 
     open private(set) var currentTime: Double = 0.0
+
+    public private(set) var currentPlayerConfiguration: YTSwiftyPlayerConfiguration?
  
     private var playerVars: [String: AnyObject] = [:]
     
@@ -229,6 +231,7 @@ open class YTSwiftyPlayer: WKWebView {
         let htmlProvider = YTSwiftyPlayerHTMLProvider(playerOptions: parameters, playerParameters: playerVars)
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
 
+        currentPlayerConfiguration = playerConfiguration
         loadHTMLString(html, baseURL: playerConfiguration.referrer)
     }
     
