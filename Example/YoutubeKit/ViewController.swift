@@ -50,7 +50,8 @@ final class ViewController: UIViewController {
         //                                                viewportInitialScale: 1)
         let config = SmartEmbedsPlayerConfiguration(channelIDs: ["UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"],
                                                     referrer: URL(string: "https://www.scmp.com/news/china/politics/article/3084573/china-legislature-meets-set-tone-global-role-post-pandemic"),
-                                                    viewportInitialScale: 1)
+                                                    viewportInitialScale: 1,
+                                                    getCurrentTimeSchedulerInterval: 0.25)
         player.loadPlayer(with: config)
 
         // (Optional) Create a new request for video list

@@ -14,6 +14,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
     static let playerOptions = "{player-options}"
     static let viewportInitialScale = "{viewport-initial-scale}"
     static let iframeSrcQueryString = "{iframe-src-query-string}"
+    static let getCurrentTimeInterval = "'{get-current-time-interval}'"
   }
 
   let playerOptions: [String: AnyObject]
@@ -28,6 +29,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
 
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
       return htmlString
     } catch {
       return nil
@@ -43,6 +45,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
 
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
 
       // Create query strings for the iframe src url
       var paramsForQueryStrings = playerParameters.filter({ key, val in

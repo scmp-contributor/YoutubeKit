@@ -10,6 +10,7 @@ import Foundation
 public protocol YTSwiftyPlayerConfiguration {
   var referrer: URL? { get }
   var viewportInitialScale: CGFloat { get }
+  var getCurrentTimeSchedulerInterval: TimeInterval { get }
 
   func accept<VisitorType: YTSwiftyPlayerConfigurationVisitor>(visitor: VisitorType) -> VisitorType.ResultType
 }
@@ -20,13 +21,16 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let videoID: String
   public let referrer: URL?
   public let viewportInitialScale: CGFloat
+  public let getCurrentTimeSchedulerInterval: TimeInterval
 
   public init(videoID: String,
               referrer: URL? = nil,
-              viewportInitialScale: CGFloat = 1) {
+              viewportInitialScale: CGFloat = 1,
+              getCurrentTimeSchedulerInterval: TimeInterval = 0.5) {
     self.videoID = videoID
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
+    self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
   }
 
   public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {
@@ -41,15 +45,18 @@ public struct SmartEmbedsPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let blockedVideoIDs: [String]
   public let referrer: URL?
   public let viewportInitialScale: CGFloat
+  public let getCurrentTimeSchedulerInterval: TimeInterval
 
   public init(channelIDs: [String],
               blockedVideoIDs: [String] = [],
               referrer: URL? = nil,
-              viewportInitialScale: CGFloat = 1) {
+              viewportInitialScale: CGFloat = 1,
+              getCurrentTimeSchedulerInterval: TimeInterval = 0.5) {
     self.channelIDs = channelIDs
     self.blockedVideoIDs = blockedVideoIDs
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
+    self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
   }
 
   public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {

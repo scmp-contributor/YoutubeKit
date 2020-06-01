@@ -209,12 +209,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = V4CT2P98Z9;
+						DevelopmentTeam = M326TDQB83;
 						LastSwiftMigration = 0820;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = V4CT2P98Z9;
+						DevelopmentTeam = M326TDQB83;
 						LastSwiftMigration = 0820;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -470,11 +470,11 @@
 			baseConfigurationReference = 33690EE60B995312FD9131F2 /* Pods-YoutubeKit_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = V4CT2P98Z9;
+				DEVELOPMENT_TEAM = M326TDQB83;
 				INFOPLIST_FILE = YoutubeKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.rinov.YoutubeKit-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "hlwan.test.rinov.YoutubeKit-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -486,11 +486,11 @@
 			baseConfigurationReference = 89E6337A49B5357D8D13A020 /* Pods-YoutubeKit_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = V4CT2P98Z9;
+				DEVELOPMENT_TEAM = M326TDQB83;
 				INFOPLIST_FILE = YoutubeKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.rinov.YoutubeKit-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "hlwan.test.rinov.YoutubeKit-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -501,7 +501,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 02B6BF7FD57257BBD7DF796A /* Pods-YoutubeKit_Tests.debug.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = V4CT2P98Z9;
+				DEVELOPMENT_TEAM = M326TDQB83;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -522,7 +522,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7443AD8A91D67A416885F092 /* Pods-YoutubeKit_Tests.release.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = V4CT2P98Z9;
+				DEVELOPMENT_TEAM = M326TDQB83;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
