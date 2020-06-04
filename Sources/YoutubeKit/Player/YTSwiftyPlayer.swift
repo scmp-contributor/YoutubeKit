@@ -289,6 +289,7 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
             updateInfo()
         case .onStateChange:
             updateState(message.body as? Int)
+            updateVideoData()
             let isLoop = playerVars["loop"] as? String == "1"
             if playerState == .ended && isLoop {
                 playVideo()
