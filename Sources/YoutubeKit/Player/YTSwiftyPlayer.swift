@@ -83,14 +83,18 @@ open class YTSwiftyPlayer: WKWebView {
     ]
     static private var defaultConfiguration: WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
-        config.allowsAirPlayForMediaPlayback = true
+        config.allowsAirPlayForMediaPlayback = false
         config.allowsInlineMediaPlayback = true
-        config.allowsPictureInPictureMediaPlayback = true
+        config.allowsPictureInPictureMediaPlayback = false
         return config
     }
     
     public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
         let config = YTSwiftyPlayer.defaultConfiguration
+        if let allowsInlineStr = playerVars[VideoEmbedParameter.playsInline(false).key] as? String, allowsInlineStr == "0" {
+          config.allowsInlineMediaPlayback = false
+        }
+
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
 
