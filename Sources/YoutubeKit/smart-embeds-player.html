@@ -34,7 +34,7 @@
     // Listen for event fired when no recommended videos are found
     window.addEventListener("message", function(event) {
       if (event.origin == 'https://www.youtube.com' &&
-          event.data == 'youtube-smart-embed-close') {
+          event.data.message_id == 'youtube-smart-embed-close') {
         webkit.messageHandlers.onVideosNotFoundForSmartEmbeds.postMessage('');
       }
     }, false);
