@@ -158,7 +158,11 @@ open class YTSwiftyPlayer: WKWebView {
             self?.isMuted = false
         }
     }
-    
+
+    public func setVolume(_ volume: Int) {
+        evaluatePlayerCommand(String(format: "setVolume(%d)", min(100, max(0, volume))))
+    }
+
     public func previousVideo() {
         evaluatePlayerCommand("previousVideo()")
     }
