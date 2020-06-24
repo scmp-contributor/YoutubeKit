@@ -11,6 +11,7 @@ public protocol YTSwiftyPlayerConfiguration {
   var referrer: URL? { get }
   var viewportInitialScale: CGFloat { get }
   var getCurrentTimeSchedulerInterval: TimeInterval { get }
+  var isMuted: Bool { get }
 
   func accept<VisitorType: YTSwiftyPlayerConfigurationVisitor>(visitor: VisitorType) -> VisitorType.ResultType
 }
@@ -22,15 +23,18 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let referrer: URL?
   public let viewportInitialScale: CGFloat
   public let getCurrentTimeSchedulerInterval: TimeInterval
+  public let isMuted: Bool
 
   public init(videoID: String,
               referrer: URL? = nil,
               viewportInitialScale: CGFloat = 1,
-              getCurrentTimeSchedulerInterval: TimeInterval = 0.5) {
+              getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
+              isMuted: Bool = false) {
     self.videoID = videoID
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
     self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
+    self.isMuted = isMuted
   }
 
   public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {
@@ -46,17 +50,20 @@ public struct SmartEmbedsPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let referrer: URL?
   public let viewportInitialScale: CGFloat
   public let getCurrentTimeSchedulerInterval: TimeInterval
+  public let isMuted: Bool
 
   public init(channelIDs: [String],
               blockedVideoIDs: [String] = [],
               referrer: URL? = nil,
               viewportInitialScale: CGFloat = 1,
-              getCurrentTimeSchedulerInterval: TimeInterval = 0.5) {
+              getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
+              isMuted: Bool = false) {
     self.channelIDs = channelIDs
     self.blockedVideoIDs = blockedVideoIDs
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
     self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
+    self.isMuted = isMuted
   }
 
   public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {

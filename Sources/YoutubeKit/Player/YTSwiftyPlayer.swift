@@ -287,6 +287,11 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
         guard let event = YTSwiftyPlayerEvent(rawValue: message.name) else { return }
         switch event {
         case .onReady:
+            // Mute initially if specified
+            if currentPlayerConfiguration?.isMuted ?? false {
+              mute()
+            }
+            
             delegate?.playerReady(self)
             
             // The HTML5 video element, in certain mobile browsers, only allows playback to take place if it's initiated by a user interaction, due to this restriction, functions and parameters such as autoplay, playVideo(), loadVideoById() won't work in all mobile environments.
