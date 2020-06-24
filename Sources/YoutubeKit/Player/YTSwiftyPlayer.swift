@@ -308,6 +308,9 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
                 playVideo()
             }
             delegate?.player(self, didChangeState: playerState)
+            if playerState == .playing {
+                NotificationCenter.default.post(name: .ytSwiftyPlayerDidPlaying, object: nil, userInfo: ["player": self])
+            }
         case .onQualityChange:
             updateQuality(message.body as? String)
             delegate?.player(self, didChangeQuality: playerQuality)
