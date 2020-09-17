@@ -480,7 +480,10 @@
 				47758D078423B319AC6D4027EECDC2F2 /* Products */,
 				7A9F23724E960E85D6B089EE397DD797 /* Targets Support Files */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
 		};
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
 			isa = PBXGroup;
