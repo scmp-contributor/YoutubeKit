@@ -68,6 +68,8 @@ open class YTSwiftyPlayer: WKWebView {
     public private(set) var currentPlayerConfiguration: YTSwiftyPlayerConfiguration?
  
     private var playerVars: [String: AnyObject] = [:]
+
+    private var embedConfig: [String: AnyObject] = [:]
     
     private let callbackHandlers: [YTSwiftyPlayerEvent] = [
         .onYoutubeIframeAPIReady,
@@ -89,7 +91,7 @@ open class YTSwiftyPlayer: WKWebView {
         return config
     }
     
-    public init(frame: CGRect = .zero, playerVars: [String: AnyObject]) {
+    public init(frame: CGRect = .zero, playerVars: [String: AnyObject], embedConfig: [String: AnyObject]) {
         let config = YTSwiftyPlayer.defaultConfiguration
         if let allowsInlineStr = playerVars[VideoEmbedParameter.playsInline(false).key] as? String, allowsInlineStr == "0" {
           config.allowsInlineMediaPlayback = false
@@ -107,10 +109,11 @@ open class YTSwiftyPlayer: WKWebView {
         commonInit()
         
         self.playerVars = playerVars
+        self.embedConfig = embedConfig
     }
     
-    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = []) {
-        self.init(frame: frame, playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars))
+    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], embedConfig: [String: AnyObject] = [:]) {
+      self.init(frame: frame, playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars), embedConfig: embedConfig)
     }
     
     required public init?(coder: NSCoder) {
@@ -237,6 +240,7 @@ open class YTSwiftyPlayer: WKWebView {
             "height": "100%" as AnyObject,
             "events": events as AnyObject,
             "playerVars": playerVars as AnyObject,
+            "embedConfig": embedConfig as AnyObject,
             ]
         
         if let videoID = playerConfiguration.accept(visitor: YTSwiftyPlayerVideoIDProvider()) {
