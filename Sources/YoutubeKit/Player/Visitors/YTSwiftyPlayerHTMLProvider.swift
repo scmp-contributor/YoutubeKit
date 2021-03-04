@@ -20,6 +20,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
 
   let playerOptions: [String: AnyObject]
   let playerParameters: [String: AnyObject]
+  let embedConfigParameters: [String: AnyObject]
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "player") else { return nil }
@@ -42,10 +43,15 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       paramsForQueryStrings["enablejsapi"] = true as AnyObject
 
       var urlComponents = URLComponents()
-      var queryItems: [URLQueryItem] = paramsForQueryStrings.map({ URLQueryItem(name: $0.0, anyObjectValue: $0.1) })
+      var queryItems: [URLQueryItem] = paramsForQueryStrings.map({
+        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+      })
       queryItems.append(contentsOf: configuration.extraQueries.map({ key, val in
         URLQueryItem(name: key, value: val)
-      }))      
+      }))
+      queryItems.append(contentsOf: embedConfigParameters.map({
+        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+      }))
       urlComponents.queryItems = queryItems
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
 

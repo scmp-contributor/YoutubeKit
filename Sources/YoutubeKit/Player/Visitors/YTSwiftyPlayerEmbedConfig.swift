@@ -1,5 +1,5 @@
 //
-//  YTSwiftyPlayerIUValue.swift
+//  YTSwiftyPlayerEmbedConfig.swift
 //  YoutubeKit
 //
 //  Created by Eric Leung on 4/3/2021.

@@ -252,7 +252,11 @@ open class YTSwiftyPlayer: WKWebView {
             parameters["videoId"] = videoID as AnyObject
         }
 
-        let htmlProvider = YTSwiftyPlayerHTMLProvider(playerOptions: parameters, playerParameters: playerVars)
+
+        let htmlProvider = YTSwiftyPlayerHTMLProvider(
+          playerOptions: parameters,
+          playerParameters: playerVars,
+          embedConfigParameters: embedConfig ?? [:])
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
 
         currentPlayerConfiguration = playerConfiguration
