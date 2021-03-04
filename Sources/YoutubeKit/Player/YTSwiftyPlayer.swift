@@ -112,7 +112,7 @@ open class YTSwiftyPlayer: WKWebView {
         self.adTag = adTag
     }
     
-    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String?) {
+    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil) {
       self.init(
         frame: frame,
         playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars),
