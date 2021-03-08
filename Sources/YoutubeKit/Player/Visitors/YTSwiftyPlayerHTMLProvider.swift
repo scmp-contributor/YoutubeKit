@@ -122,10 +122,12 @@ private extension URLQueryItem {
       value = String(format: "%d", val)
     } else if let val = anyObjectValue as? Double {
       value = String(format: "%.2f", val)
+    } else if let jsonData = try? JSONSerialization.data(withJSONObject: anyObjectValue, options: []) {
+      let jsonString = String(data: jsonData, encoding: .utf8)?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+      value = jsonString
     } else {
       value = nil
     }
-
     self.init(name: name, value: value)
   }
 }
