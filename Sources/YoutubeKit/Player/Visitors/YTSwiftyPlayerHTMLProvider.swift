@@ -87,9 +87,14 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       if !configuration.blockedVideoIDs.isEmpty {
         paramsForQueryStrings["block_videos"] = configuration.blockedVideoIDs.joined(separator: ",") as AnyObject
       }
-
       var urlComponents = URLComponents()
-      urlComponents.queryItems = paramsForQueryStrings.map({ URLQueryItem(name: $0.0, anyObjectValue: $0.1) })
+      var queryItems: [URLQueryItem] = paramsForQueryStrings.map({
+        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+      })
+      queryItems.append(contentsOf: embedConfigParameters.map({
+        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+      }))
+      urlComponents.queryItems = queryItems
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
 
       return htmlString
