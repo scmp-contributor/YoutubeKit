@@ -14,7 +14,7 @@ struct YTSwiftyPlayerEmbedConfig: YTSwiftyPlayerConfigurationVisitor {
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> [String: AnyObject]? {
     let iu: String
     if let prefix = adTagPrefix {
-      iu = "\(prefix)/instream2"
+      iu = "\(prefix)/instream1"
     } else {
       iu = ""
     }
