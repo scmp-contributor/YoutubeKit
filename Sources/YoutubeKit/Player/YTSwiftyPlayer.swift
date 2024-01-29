@@ -101,7 +101,14 @@ open class YTSwiftyPlayer: WKWebView {
         config.userContentController = userContentController
 
         super.init(frame: frame, configuration: config)
-        
+
+        // inject JS to capture console.log output and send to iOS
+        let source = "function captureLog(msg) { window.webkit.messageHandlers.logHandler.postMessage(msg); } window.console.log = captureLog;"
+        let script = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        self.configuration.userContentController.addUserScript(script)
+        // register the bridge script that listens for the output
+        self.configuration.userContentController.add(self, name: "logHandler")
+
         callbackHandlers.forEach {
             userContentController.add(ScriptMessageHandler(delegate: self), name: $0.rawValue)
         }
@@ -297,6 +304,9 @@ open class YTSwiftyPlayer: WKWebView {
 extension YTSwiftyPlayer: WKScriptMessageHandler {
     
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+      if message.name == "logHandler" {
+        print("[YTSwiftyPlayer] console.log: \(message.body)")
+      }
         guard let event = YTSwiftyPlayerEvent(rawValue: message.name) else { return }
         switch event {
         case .onReady:
