@@ -30,22 +30,22 @@ struct YTSwiftyPlayerEmbedConfig: YTSwiftyPlayerConfigurationVisitor {
     return ["embed_config": embedConfig]
   }
 
-  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> [String: AnyObject]? {
-    let iu: String
-    if let prefix = adTagPrefix {
-      iu = "\(prefix)/instream2"
-    } else {
-      iu = ""
-    }
-
-    let adTagParams: [String: String] = [
-      "iu": iu
-    ]
-    let adConfig = [
-      "adTagParameters": adTagParams,
-      "nonPersonalizedAd": true
-    ] as AnyObject
-    let embedConfig = ["adsConfig": adConfig] as AnyObject
-    return ["embed_config": embedConfig]
-  }
+//  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> [String: AnyObject]? {
+//    let iu: String
+//    if let prefix = adTagPrefix {
+//      iu = "\(prefix)/instream2"
+//    } else {
+//      iu = ""
+//    }
+//
+//    let adTagParams: [String: String] = [
+//      "iu": iu
+//    ]
+//    let adConfig = [
+//      "adTagParameters": adTagParams,
+//      "nonPersonalizedAd": true
+//    ] as AnyObject
+//    let embedConfig = ["adsConfig": adConfig] as AnyObject
+//    return ["embed_config": embedConfig]
+//  }
 }

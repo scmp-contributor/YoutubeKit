@@ -13,6 +13,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
   private struct ReplacementKeys {
     static let videoId = "{video-id}"
     static let playerOptions = "{player-options}"
+    static let gaClientId = "{ga-client-id}"
     static let viewportInitialScale = "{viewport-initial-scale}"
     static let iframeSrcQueryString = "{iframe-src-query-string}"
     static let getCurrentTimeInterval = "'{get-current-time-interval}'"
@@ -21,6 +22,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
   let playerOptions: [String: AnyObject]
   let playerParameters: [String: AnyObject]
   let embedConfigParameters: [String: AnyObject]
+  let gaClientId: String
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "player") else { return nil }
@@ -29,11 +31,11 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
       guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
 
-		htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
+    htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
-		
+
       // Create query strings for the iframe src url
       var paramsForQueryStrings = playerParameters.filter({ key, val in
         return key == VideoEmbedParameter.playsInline(true).key || key == VideoEmbedParameter.autoplay(true).key
@@ -55,53 +57,54 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       urlComponents.queryItems = queryItems
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
 
-		return htmlString
+    return htmlString
     } catch {
       return nil
     }
   }
 
-  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> String? {
-    guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "smart-embeds-player") else { return nil }
-
-    do {
-      let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
-      guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
-
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
-
-      // Create query strings for the iframe src url
-      var paramsForQueryStrings = playerParameters.filter({ key, val in
-        return key == VideoEmbedParameter.playsInline(true).key || key == VideoEmbedParameter.autoplay(true).key
-      })
-
-      // Set enable js api
-      paramsForQueryStrings["enablejsapi"] = true as AnyObject
-
-      // Set channel IDs
-      paramsForQueryStrings["channels"] = configuration.channelIDs.joined(separator: ",") as AnyObject
-
-      // Set blocked video IDs
-      if !configuration.blockedVideoIDs.isEmpty {
-        paramsForQueryStrings["block_videos"] = configuration.blockedVideoIDs.joined(separator: ",") as AnyObject
-      }
-      var urlComponents = URLComponents()
-      var queryItems: [URLQueryItem] = paramsForQueryStrings.map({
-        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
-      })
-      queryItems.append(contentsOf: embedConfigParameters.map({
-        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
-      }))
-      urlComponents.queryItems = queryItems
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
-
-      return htmlString
-    } catch {
-      return nil
-    }
-  }
+//  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> String? {
+//    return nil
+////    guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "smart-embeds-player") else { return nil }
+////
+////    do {
+////      let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
+////      guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
+////
+////      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
+////      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
+////      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
+////
+////      // Create query strings for the iframe src url
+////      var paramsForQueryStrings = playerParameters.filter({ key, val in
+////        return key == VideoEmbedParameter.playsInline(true).key || key == VideoEmbedParameter.autoplay(true).key
+////      })
+////
+////      // Set enable js api
+////      paramsForQueryStrings["enablejsapi"] = true as AnyObject
+////
+////      // Set channel IDs
+////      paramsForQueryStrings["channels"] = configuration.channelIDs.joined(separator: ",") as AnyObject
+////
+////      // Set blocked video IDs
+////      if !configuration.blockedVideoIDs.isEmpty {
+////        paramsForQueryStrings["block_videos"] = configuration.blockedVideoIDs.joined(separator: ",") as AnyObject
+////      }
+////      var urlComponents = URLComponents()
+////      var queryItems: [URLQueryItem] = paramsForQueryStrings.map({
+////        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+////      })
+////      queryItems.append(contentsOf: embedConfigParameters.map({
+////        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+////      }))
+////      urlComponents.queryItems = queryItems
+////      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
+////
+////      return htmlString
+////    } catch {
+////      return nil
+////    }
+//  }
 
   private static func getHTMLString(forName name: String) -> String? {
     let currentBundle = Bundle(for: YTSwiftyPlayer.self)

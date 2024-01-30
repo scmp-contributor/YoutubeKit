@@ -1,63 +1,92 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="initial-scale={viewport-initial-scale}, user-scalable=no">
-    <style>
-      html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000000; }
-    </style>
-    <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-</head>
-<body>
-    <iframe id="player" width="100%" height="100%"
-      src="https://www.youtube.com/smart_embed?{iframe-src-query-string}"
-      frameborder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-      allowfullscreen>
-    </iframe>
-    <div id="explain"></div>
-    <script src="https://www.youtube.com/iframe_api?ima=1" onerror="webkit.messageHandlers.onYouTubeIframeAPIFailedToLoad.postMessage('')"></script>
-    <script>
-      var player;
-      var time;
-      YT.ready(function() {
-        player = new YT.Player('player', {player-options});
-        webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
-        function updateTime() {
-          var state = player.getPlayerState();
-          if (state == YT.PlayerState.PLAYING) {
-            time = player.getCurrentTime();
-            webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
-          }
-        }
-        window.setInterval(updateTime, '{get-current-time-interval}');
-      });
-
-    // Listen for event fired when no recommended videos are found
-    window.addEventListener("message", function(event) {
-      if (event.origin == 'https://www.youtube.com' &&
-          event.data.message_id == 'youtube-smart-embed-close') {
-        webkit.messageHandlers.onVideosNotFoundForSmartEmbeds.postMessage('');
-      }
-    }, false);
-
-    function onReady(event) {
-      webkit.messageHandlers.onReady.postMessage('');
-    }
-    function onStateChange(event) {
-      webkit.messageHandlers.onStateChange.postMessage(event.data);
-    }
-    function onPlaybackQualityChange(event) {
-      webkit.messageHandlers.onPlaybackQualityChange.postMessage(event.data);
-    }
-    function onPlaybackRateChange(event) {
-      webkit.messageHandlers.onPlaybackRateChange.postMessage(event.data);
-    }
-    function onPlayerError(event) {
-      webkit.messageHandlers.onError.postMessage(event.data);
-    }
-    function onApiChange(event) {
-      webkit.messageHandlers.onApiChange.postMessage(event.data);
-    }
-    </script>
-</body>
-</html>
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--  <meta name="viewport" content="initial-scale={viewport-initial-scale}, user-scalable=no">-->
+<!--    <style>-->
+<!--      html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000000; }-->
+<!--    </style>-->
+<!--    <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <iframe id="player" width="100%" height="100%"-->
+<!--      src="https://www.youtube.com/smart_embed?{iframe-src-query-string}"-->
+<!--      frameborder="0"-->
+<!--      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"-->
+<!--      allowfullscreen>-->
+<!--    </iframe>-->
+<!--    <div id="explain"></div>-->
+<!--    <script src="https://www.youtube.com/iframe_api?ima=1" onerror="webkit.messageHandlers.onYouTubeIframeAPIFailedToLoad.postMessage('')"></script>-->
+<!--    <script>-->
+<!--      var player;-->
+<!--      var time;-->
+<!--      var imaManager;-->
+<!--      YT.ready(function() {-->
+<!--        // player = new YT.Player('player', {player-options});-->
+<!--        YT.createPlayerForPublishers(-->
+<!--        'pfp-container',-->
+<!--        makeAdsRequest,-->
+<!--        {-->
+<!--        youtubeOptions: {{player-options}}-->
+<!--        },-->
+<!--        onPlayerReady);-->
+<!---->
+<!--        webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');-->
+<!--        function updateTime() {-->
+<!--          var state = player.getPlayerState();-->
+<!--          if (state == YT.PlayerState.PLAYING) {-->
+<!--            time = player.getCurrentTime();-->
+<!--            webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);-->
+<!--          }-->
+<!--        }-->
+<!--        window.setInterval(updateTime, '{get-current-time-interval}');-->
+<!--      });-->
+<!---->
+<!--    // Listen for event fired when no recommended videos are found-->
+<!--    window.addEventListener("message", function(event) {-->
+<!--      if (event.origin == 'https://www.youtube.com' &&-->
+<!--          event.data.message_id == 'youtube-smart-embed-close') {-->
+<!--        webkit.messageHandlers.onVideosNotFoundForSmartEmbeds.postMessage('');-->
+<!--      }-->
+<!--    }, false);-->
+<!---->
+<!--    function onReady(event) {-->
+<!--      webkit.messageHandlers.onReady.postMessage('');-->
+<!--    }-->
+<!--    function onStateChange(event) {-->
+<!--      webkit.messageHandlers.onStateChange.postMessage(event.data);-->
+<!--    }-->
+<!--    function onPlaybackQualityChange(event) {-->
+<!--      webkit.messageHandlers.onPlaybackQualityChange.postMessage(event.data);-->
+<!--    }-->
+<!--    function onPlaybackRateChange(event) {-->
+<!--      webkit.messageHandlers.onPlaybackRateChange.postMessage(event.data);-->
+<!--    }-->
+<!--    function onPlayerError(event) {-->
+<!--      webkit.messageHandlers.onError.postMessage(event.data);-->
+<!--    }-->
+<!--    function onApiChange(event) {-->
+<!--      webkit.messageHandlers.onApiChange.postMessage(event.data);-->
+<!--    }-->
+<!--    function makeAdsRequest(adsRequest, adsRenderingSettings) {-->
+<!--          // Required-->
+<!--        adsRequest.adTagUrl = adsTagUrl;-->
+<!--          // Recommended-->
+<!--        adsRenderingsettings.useStyledNonLinearAds = true;-->
+<!--          // Optional: you can also update other properties of-->
+<!--          // the AdsRequest.-->
+<!--          // Optional: you can also update the adsRenderingSettings-->
+<!--          // object if needed.-->
+<!--        adsRenderingsettings.uiElements = [-->
+<!--        window.google.ima.UiElements.AD_ATTRIBUTION,-->
+<!--        window.google.ima.UiElements.COUNTDOWN];-->
+<!--    }-->
+<!--      // You can use a callback function if you want to do some-->
+<!--      // customization after the player is instantiated or you-->
+<!--      // want handles to the player and IMA manager.-->
+<!--    function onPlayerReady(plyr, ima) {-->
+<!--        player = plyr;-->
+<!--        imaManager = ima;-->
+<!--      }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->

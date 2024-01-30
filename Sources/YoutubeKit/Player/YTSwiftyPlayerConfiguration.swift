@@ -12,6 +12,7 @@ public protocol YTSwiftyPlayerConfiguration {
   var viewportInitialScale: CGFloat { get }
   var getCurrentTimeSchedulerInterval: TimeInterval { get }
   var isMuted: Bool { get }
+  var gaClientId: String { get }
 
   func accept<VisitorType: YTSwiftyPlayerConfigurationVisitor>(visitor: VisitorType) -> VisitorType.ResultType
 }
@@ -24,6 +25,7 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let viewportInitialScale: CGFloat
   public let getCurrentTimeSchedulerInterval: TimeInterval
   public let isMuted: Bool
+  public let gaClientId: String
   public let extraQueries: [String: String]
 
   public init(videoID: String,
@@ -31,12 +33,14 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
               viewportInitialScale: CGFloat = 1,
               getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
               isMuted: Bool = false,
+              gaClientId: String,
               extraQueries: [String: String] = [:]) {
     self.videoID = videoID
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
     self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
     self.isMuted = isMuted
+    self.gaClientId = gaClientId
     self.extraQueries = extraQueries
   }
 
@@ -47,32 +51,32 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
 
 // MARK: -
 
-public struct SmartEmbedsPlayerConfiguration: YTSwiftyPlayerConfiguration {
-  public let channelIDs: [String]
-  public let blockedVideoIDs: [String]
-  public let referrer: URL?
-  public let viewportInitialScale: CGFloat
-  public let getCurrentTimeSchedulerInterval: TimeInterval
-  public let isMuted: Bool
-
-  public init(channelIDs: [String],
-              blockedVideoIDs: [String] = [],
-              referrer: URL? = nil,
-              viewportInitialScale: CGFloat = 1,
-              getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
-              isMuted: Bool = false) {
-    self.channelIDs = channelIDs
-    self.blockedVideoIDs = blockedVideoIDs
-    self.referrer = referrer ?? URL(string: "https://www.youtube.com")
-    self.viewportInitialScale = viewportInitialScale
-    self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
-    self.isMuted = isMuted
-  }
-
-  public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {
-    return visitor.forSmartEmbedsPlayer(self)
-  }
-}
+//public struct SmartEmbedsPlayerConfiguration: YTSwiftyPlayerConfiguration {
+//  public let channelIDs: [String]
+//  public let blockedVideoIDs: [String]
+//  public let referrer: URL?
+//  public let viewportInitialScale: CGFloat
+//  public let getCurrentTimeSchedulerInterval: TimeInterval
+//  public let isMuted: Bool
+//
+//  public init(channelIDs: [String],
+//              blockedVideoIDs: [String] = [],
+//              referrer: URL? = nil,
+//              viewportInitialScale: CGFloat = 1,
+//              getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
+//              isMuted: Bool = false) {
+//    self.channelIDs = channelIDs
+//    self.blockedVideoIDs = blockedVideoIDs
+//    self.referrer = referrer ?? URL(string: "https://www.youtube.com")
+//    self.viewportInitialScale = viewportInitialScale
+//    self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
+//    self.isMuted = isMuted
+//  }
+//
+//  public func accept<VisitorType>(visitor: VisitorType) -> VisitorType.ResultType where VisitorType : YTSwiftyPlayerConfigurationVisitor {
+//    return visitor.forSmartEmbedsPlayer(self)
+//  }
+//}
 
 // MARK: - Visitor
 
@@ -80,5 +84,5 @@ public protocol YTSwiftyPlayerConfigurationVisitor {
   associatedtype ResultType
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> ResultType
-  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> ResultType
+//  func forSmartEmbedsPlayer(_ configuration: SmartEmbedsPlayerConfiguration) -> ResultType
 }
