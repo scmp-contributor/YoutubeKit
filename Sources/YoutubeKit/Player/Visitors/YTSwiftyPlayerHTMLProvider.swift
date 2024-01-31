@@ -10,13 +10,14 @@ import Foundation
 struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
   typealias ResultType = String?
 
-  private struct ReplacementKeys {
+  struct ReplacementKeys {
     static let videoId = "{video-id}"
     static let playerOptions = "{player-options}"
     static let gaClientId = "{ga-client-id}"
     static let viewportInitialScale = "{viewport-initial-scale}"
     static let iframeSrcQueryString = "{iframe-src-query-string}"
     static let getCurrentTimeInterval = "'{get-current-time-interval}'"
+    static let adTag = "{ad-tag}"
   }
 
   let playerOptions: [String: AnyObject]
@@ -31,8 +32,9 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       let json = try JSONSerialization.data(withJSONObject: playerOptions, options: [])
       guard let jsonString = String(data: json, encoding: String.Encoding.utf8) else { return nil }
 
-    htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.gaClientId, with: configuration.gaClientId)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
 
@@ -51,9 +53,9 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
       queryItems.append(contentsOf: configuration.extraQueries.map({ key, val in
         URLQueryItem(name: key, value: val)
       }))
-      queryItems.append(contentsOf: embedConfigParameters.map({
-        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
-      }))
+//      queryItems.append(contentsOf: embedConfigParameters.map({
+//        URLQueryItem(name: $0.0, anyObjectValue: $0.1)
+//      }))
       urlComponents.queryItems = queryItems
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.iframeSrcQueryString, with: urlComponents.query ?? "")
 

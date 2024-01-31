@@ -239,17 +239,17 @@ open class YTSwiftyPlayer: WKWebView {
     public func loadPlayer(with playerConfiguration: YTSwiftyPlayerConfiguration) {
         let events: [String: AnyObject] = {
             var registerEvents: [String: AnyObject] = [:]
-            callbackHandlers.forEach {
-                registerEvents[$0.rawValue] = $0.rawValue as AnyObject
-            }
-            return  registerEvents
+          callbackHandlers.forEach {
+            registerEvents[$0.rawValue] = $0.rawValue as AnyObject
+          }
+          return  registerEvents
         }()
 
         let embedConfig = playerConfiguration.accept(visitor: YTSwiftyPlayerEmbedConfig(adTagPrefix: adTag))
-
+        print("[YTSwiftyPlayer] frame: \(self.frame)")
         var parameters = [
             "width": "100%" as AnyObject,
-            "height": "100%" as AnyObject,
+            "height": "\(self.frame.height)px" as AnyObject,
             "events": events as AnyObject,
             "playerVars": playerVars as AnyObject,
             "embedConfig": embedConfig as AnyObject,
@@ -266,9 +266,10 @@ open class YTSwiftyPlayer: WKWebView {
           embedConfigParameters: embedConfig ?? [:],
           gaClientId: playerConfiguration.gaClientId)
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
-
+        let htmlString = html.replacingOccurrences(of: YTSwiftyPlayerHTMLProvider.ReplacementKeys.adTag,
+                                                   with: self.adTag ?? "")
         currentPlayerConfiguration = playerConfiguration
-        loadHTMLString(html, baseURL: playerConfiguration.referrer)
+        loadHTMLString(htmlString, baseURL: playerConfiguration.referrer)
     }
 
     // MARK: - Private Methods
@@ -309,9 +310,7 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
         print("[YTSwiftyPlayer] console.log: \(message.body)")
         return
       }
-        guard let event = YTSwiftyPlayerEvent(rawValue: message.name) else {
-          print("[YTSwiftyPlayer] didReceive message: \(message.name)");
-          return }
+        guard let event = YTSwiftyPlayerEvent(rawValue: message.name) else { return }
         print("[YTSwiftyPlayer] didReceive event: \(event)")
 
         switch event {
@@ -340,6 +339,7 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
             if playerState == .playing {
                 NotificationCenter.default.post(name: .ytSwiftyPlayerDidPlaying, object: nil, userInfo: ["player": self])
             }
+          print("[YTSwiftyPlayer] didReceive event playerState: \(playerState)")
         case .onQualityChange:
             updateQuality(message.body as? String)
             delegate?.player(self, didChangeQuality: playerQuality)

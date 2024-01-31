@@ -1,146 +1,154 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <meta name="viewport" content="initial-scale={viewport-initial-scale}, user-scalable=no">
-      <style>
-        html,
-        body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: 100%;
-          background-color: #000000;
-        }
-      </style>
-  </head>
+<head>
+  <meta name="viewport" content="initial-scale={viewport-initial-scale}, user-scalable=no">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+    }
+    #player {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    }
 
-  <body>
-    <iframe id="player" type="text/html" width="100%" height="100%"
-      src="https://www.youtube.com/embed/{video-id}?{iframe-src-query-string}" frameborder="0">
-    </iframe>
-    <script src="//imasdk.googleapis.com/js/sdkloader/ima3_debug.js"></script>
-    <script src="https://www.youtube.com/iframe_api?ima=1"
-      onerror="webkit.messageHandlers.onYouTubeIframeAPIFailedToLoad.postMessage('')"></script>
-    <script>
-      var player;
-      var time;
-      var imaManager;
+  </style>
+</head>
 
-      function onYouTubeIframeAPIReady() {
-        console.log("[play.html] onYouTubeIframeAPIReady")
+<body>
+  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3_debug.js"></script>
+  <script src="https://www.youtube.com/iframe_api?ima=1"
+    onerror="webkit.messageHandlers.onYouTubeIframeAPIFailedToLoad.postMessage('')"></script>
+  <div id="player"></div>
+
+  <script>
+    var videoPlayer;
+    var time;
+    var imaManager;
+    var stateInterval;
+
+    function onYouTubeIframeAPIReady() {
+      console.log("[play.html] onYouTubeIframeAPIReady")
 
 
-        try {
-          var options = {player-options};
-          webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
-          YT.createPlayerForPublishers(
-                                       'player',
-                                       makeAdsRequest,
-                                       {
-                                         youtubeOptions: options,
-                                         imaOptions: {}
-                                       },
-                                       onPlayerReady);
+      try {
+        var options = {player-options};
+        delete options['embedConfig'];
+        delete options['events']['onReady'];
+        // options["embedConfig"] = {};
 
-                                       console.log("[play.html] onYouTubeIframeAPIReady done")
-        }
-        catch (err) {
-          console.log("[play.html] onYouTubeIframeAPIReady catch error: " + err)
-        }
+        console.log("[play.html] onYouTubeIframeAPIReady options: " + JSON.stringify(options));
+        webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
+        YT.createPlayerForPublishers(
+          'player',
+          makeAdsRequest,
+          {
+            youtubeOptions: options,
+            imaOptions: {}
+          },
+          onPlayerReady);
+
+        console.log("[play.html] onYouTubeIframeAPIReady done")
       }
-
-      function onReady(event) {
-        console.log("[play.html] onReady: " + JSON.stringify(event))
-        webkit.messageHandlers.onReady.postMessage(event.data);
+      catch (err) {
+        console.log("[play.html] onYouTubeIframeAPIReady catch error: " + err)
       }
+    }
 
-      function onStateChange(event) {
-        console.log("[play.html] onStateChange")
+    function onReady(event) {
+      console.log("[play.html] onReady: " + JSON.stringify(event))
+      webkit.messageHandlers.onReady.postMessage(event.data);
+    }
+
+    function onStateChange(event) {
+      try {
+        console.log("[play.html] onStateChange: " + event.data)
         webkit.messageHandlers.onStateChange.postMessage(event.data);
-      }
-      function onPlaybackQualityChange(event) {
-        console.log("[play.html] onPlaybackQualityChange")
-        webkit.messageHandlers.onPlaybackQualityChange.postMessage(event.data);
-      }
-      function onPlaybackRateChange(event) {
-        console.log("[play.html] onPlaybackRateChange")
-        webkit.messageHandlers.onPlaybackRateChange.postMessage(event.data);
-      }
-      function onPlayerError(event) {
-        console.log("[play.html] onPlayerError")
-        webkit.messageHandlers.onError.postMessage(event.data);
-      }
-      function onApiChange(event) {
-        console.log("[play.html] onApiChange")
-        webkit.messageHandlers.onApiChange.postMessage(event.data);
-      }
-      // function makeAdsRequest(adsRequest, adsRenderingSettings) {
-      function makeAdsRequest(adsRequest, adsRenderingSettings) {
-
-        try {
-          const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
-          const gaId = getGoogleAnalyticsClientIdSync();
-          // cspell: ignore instream gdfp tfcd unviewed vpmute
-          // Required
-          adsRequest.adTagUrl = `${adUrl}?${qs.stringify({
-                  correlator: "",
-                  cust_params: getCustomizedParameter(),
-                  env: "instream",
-                  gdfp_req: "1",
-                  impl: "s",
-                  iu: adData.iu,
-                  npa: "0",
-                  output: "vast",
-                  sz: "400x300|480x70|480x360|480x361|640x480",
-                  tfcd: "0",
-                  unviewed_position_start: "1",
-                  url: window.location.origin,
-                  vpa: "click",
-                  vpmute: "1",
-                  wta: "1",
-                })}`;
-          console.log("[play.html] makeAdsRequest adTagUrl: " + adTagUrl)
-          // Recommended
-          adsRenderingSettings["useStyledNonLinearAds"] = true
-          // Optional: you can also update other properties of the AdsRequest.
-          // Optional: you can also update the adsRenderingSettings  object if needed.
-          adsRenderingSettings["uiElements"] = [window.google.ima.UiElements.AD_ATTRIBUTION,
-                                                window.google.ima.UiElements.COUNTDOWN];
-        } catch (err) {
-          console.log("[play.html] makeAdsRequest catch error: " + err)
+        var state = videoPlayer.getPlayerState();
+        if (state == YT.PlayerState.PLAYING) {
+          stateInterval = window.setInterval(updateTime, '{get-current-time-interval}');
+        } else {
+          clearInterval(stateInterval);
         }
-        console.log("[play.html] makeAdsRequest done")
+
+      } catch (err) {
+          console.log("[play.html] onStateChange catch error: " + err)
       }
-      // You can use a callback function if you want to do some
-      // customization after the player is instantiated or you
-      // want handles to the player and IMA manager.
-      function onPlayerReady(plyr, ima) {
+    }
+    function onPlaybackQualityChange(event) {
+      console.log("[play.html] onPlaybackQualityChange")
+      webkit.messageHandlers.onPlaybackQualityChange.postMessage(event.data);
+    }
+    function onPlaybackRateChange(event) {
+      console.log("[play.html] onPlaybackRateChange")
+      webkit.messageHandlers.onPlaybackRateChange.postMessage(event.data);
+    }
+    function onPlayerError(event) {
+      console.log("[play.html] onPlayerError")
+      webkit.messageHandlers.onError.postMessage(event.data);
+    }
+    function onApiChange(event) {
+      console.log("[play.html] onApiChange")
+      webkit.messageHandlers.onApiChange.postMessage(event.data);
+    }
 
-        player = plyr;
-        imaManager = ima;
-        webkit.messageHandlers.onReady.postMessage('');
-        window.setInterval(updateTime, '{get-current-time-interval}');
-        console.log("[play.html] onPlayerReady")
+    function makeAdsRequest(adsRequest, adsRenderingSettings) {
 
-        function updateTime() {
-          var state = player.getPlayerState();
-          console.log("[play.html] updateTime state: " + state)
-          // -1 – 未啟動
-          // 0 - 已結束
-          // 1 – 播放
-          // 2 – 已暫停
-          // 3 – 緩衝處理中
-          // 5 – 隱藏影片/影片提示
-          if (state == YT.PlayerState.PLAYING) {
-            time = player.getCurrentTime()
-            webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
-            // console.log("[play.html] updateTime: " + time)
-          }
-        }
+      try {
+        const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
+        var adTag = '{ad-tag}';
+        var gaid = '{ga-client-id}';
+        console.log("[play.html] makeAdsRequest adTag: " + adTag)
+        console.log("[play.html] makeAdsRequest gaid: " + gaid)
+        // cspell: ignore instream gdfp tfcd unviewed vpmute
+        // Required
+        adsRequest.adTagUrl = `${adUrl}?correlator=&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=window.location.origin&vpa=click&vpmute=1&wta=1`;
+        console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
+        // Recommended
+        adsRenderingSettings["useStyledNonLinearAds"] = true
+        // Optional: you can also update other properties of the AdsRequest.
+        // Optional: you can also update the adsRenderingSettings  object if needed.
+        adsRenderingSettings["uiElements"] = [window.google.ima.UiElements.AD_ATTRIBUTION,
+        window.google.ima.UiElements.COUNTDOWN];
+      } catch (err) {
+        console.log("[play.html] makeAdsRequest catch error: " + err)
       }
+      console.log("[play.html] makeAdsRequest done")
+    }
+    // You can use a callback function if you want to do some
+    // customization after the player is instantiated or you
+    // want handles to the player and IMA manager.
+    function onPlayerReady(plyr, ima) {
 
-    </script>
-  </body>
+      videoPlayer = plyr;
+      imaManager = ima;
+      webkit.messageHandlers.onReady.postMessage('');
+      // window.setInterval(updateTime, '{get-current-time-interval}');
+      console.log("[play.html] onPlayerReady")
+    }
+
+    function updateTime() {
+      var state = videoPlayer.getPlayerState();
+      // -1 – 未啟動
+      // 0 - 已結束
+      // 1 – 播放
+      // 2 – 已暫停
+      // 3 – 緩衝處理中
+      // 5 – 隱藏影片/影片提示
+      if (state == YT.PlayerState.PLAYING) {
+        time = videoPlayer.getCurrentTime()
+        webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
+        // console.log("[play.html] updateTime: " + time)
+      }
+    }
+
+  </script>
+</body>
 
 </html>
