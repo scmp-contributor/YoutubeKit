@@ -28,7 +28,7 @@
   <div id="player"></div>
 
   <script>
-    var videoPlayer;
+    var player;
     var time;
     var imaManager;
     var stateInterval;
@@ -42,7 +42,7 @@
         delete options['embedConfig'];
         delete options['events']['onReady'];
         // options["embedConfig"] = {};
-
+        // options["autoplay"] = 1;
         console.log("[play.html] onYouTubeIframeAPIReady options: " + JSON.stringify(options));
         webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
         YT.createPlayerForPublishers(
@@ -68,9 +68,9 @@
 
     function onStateChange(event) {
       try {
-        console.log("[play.html] onStateChange: " + event.data)
         webkit.messageHandlers.onStateChange.postMessage(event.data);
-        var state = videoPlayer.getPlayerState();
+        var state = player.getPlayerState();
+        console.log("[play.html] onStateChange: " + state)
         if (state == YT.PlayerState.PLAYING) {
           stateInterval = window.setInterval(updateTime, '{get-current-time-interval}');
         } else {
@@ -112,10 +112,11 @@
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
         adsRenderingSettings["useStyledNonLinearAds"] = true
+        adsRenderingSettings["enablePreloading"] = true
         // Optional: you can also update other properties of the AdsRequest.
         // Optional: you can also update the adsRenderingSettings  object if needed.
         adsRenderingSettings["uiElements"] = [window.google.ima.UiElements.AD_ATTRIBUTION,
-        window.google.ima.UiElements.COUNTDOWN];
+                                              window.google.ima.UiElements.COUNTDOWN];
       } catch (err) {
         console.log("[play.html] makeAdsRequest catch error: " + err)
       }
@@ -126,15 +127,15 @@
     // want handles to the player and IMA manager.
     function onPlayerReady(plyr, ima) {
 
-      videoPlayer = plyr;
+      player = plyr;
       imaManager = ima;
       webkit.messageHandlers.onReady.postMessage('');
-      // window.setInterval(updateTime, '{get-current-time-interval}');
       console.log("[play.html] onPlayerReady")
     }
 
     function updateTime() {
-      var state = videoPlayer.getPlayerState();
+
+      var state = player.getPlayerState();
       // -1 – 未啟動
       // 0 - 已結束
       // 1 – 播放
@@ -142,9 +143,9 @@
       // 3 – 緩衝處理中
       // 5 – 隱藏影片/影片提示
       if (state == YT.PlayerState.PLAYING) {
-        time = videoPlayer.getCurrentTime()
+        time = player.getCurrentTime()
         webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
-        // console.log("[play.html] updateTime: " + time)
+        console.log("[play.html] updateTime " + time);
       }
     }
 

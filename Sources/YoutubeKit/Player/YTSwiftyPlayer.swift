@@ -246,7 +246,7 @@ open class YTSwiftyPlayer: WKWebView {
         }()
 
         let embedConfig = playerConfiguration.accept(visitor: YTSwiftyPlayerEmbedConfig(adTagPrefix: adTag))
-        print("[YTSwiftyPlayer] frame: \(self.frame)")
+
         var parameters = [
             "width": "100%" as AnyObject,
             "height": "\(self.frame.height)px" as AnyObject,
@@ -258,7 +258,7 @@ open class YTSwiftyPlayer: WKWebView {
         if let videoID = playerConfiguration.accept(visitor: YTSwiftyPlayerVideoIDProvider()) {
             parameters["videoId"] = videoID as AnyObject
         }
-
+      print("[YTSwiftyPlayer] playerVars: \(playerVars)")
 
         let htmlProvider = YTSwiftyPlayerHTMLProvider(
           playerOptions: parameters,
