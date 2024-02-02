@@ -249,7 +249,7 @@ open class YTSwiftyPlayer: WKWebView {
 
         var parameters = [
             "width": "100%" as AnyObject,
-            "height": "\(self.frame.height)px" as AnyObject,
+            "height": "100%" as AnyObject,
             "events": events as AnyObject,
             "playerVars": playerVars as AnyObject,
             "embedConfig": embedConfig as AnyObject,
