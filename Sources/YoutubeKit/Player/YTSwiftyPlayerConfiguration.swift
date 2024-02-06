@@ -12,7 +12,6 @@ public protocol YTSwiftyPlayerConfiguration {
   var viewportInitialScale: CGFloat { get }
   var getCurrentTimeSchedulerInterval: TimeInterval { get }
   var isMuted: Bool { get }
-  var gaClientId: String { get }
 
   func accept<VisitorType: YTSwiftyPlayerConfigurationVisitor>(visitor: VisitorType) -> VisitorType.ResultType
 }
@@ -25,7 +24,6 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
   public let viewportInitialScale: CGFloat
   public let getCurrentTimeSchedulerInterval: TimeInterval
   public let isMuted: Bool
-  public let gaClientId: String
   public let extraQueries: [String: String]
 
   public init(videoID: String,
@@ -33,14 +31,12 @@ public struct GeneralPlayerConfiguration: YTSwiftyPlayerConfiguration {
               viewportInitialScale: CGFloat = 1,
               getCurrentTimeSchedulerInterval: TimeInterval = 0.5,
               isMuted: Bool = false,
-              gaClientId: String,
               extraQueries: [String: String] = [:]) {
     self.videoID = videoID
     self.referrer = referrer ?? URL(string: "https://www.youtube.com")
     self.viewportInitialScale = viewportInitialScale
     self.getCurrentTimeSchedulerInterval = getCurrentTimeSchedulerInterval
     self.isMuted = isMuted
-    self.gaClientId = gaClientId
     self.extraQueries = extraQueries
   }
 

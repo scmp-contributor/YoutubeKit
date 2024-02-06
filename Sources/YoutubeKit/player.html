@@ -41,8 +41,6 @@
         var options = {player-options};
         delete options['embedConfig'];
         delete options['events']['onReady'];
-        // options["embedConfig"] = {};
-        // options["autoplay"] = 1;
         console.log("[play.html] onYouTubeIframeAPIReady options: " + JSON.stringify(options));
         webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
         YT.createPlayerForPublishers(
@@ -103,12 +101,12 @@
       try {
         const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
         var adTag = '{ad-tag}';
-        var gaid = '{ga-client-id}';
+        var customTargeting = '{cust-params}';
         console.log("[play.html] makeAdsRequest adTag: " + adTag)
-        console.log("[play.html] makeAdsRequest gaid: " + gaid)
+        console.log("[play.html] makeAdsRequest cust-params: " + customTargeting)
         // cspell: ignore instream gdfp tfcd unviewed vpmute
         // Required
-        adsRequest.adTagUrl = `${adUrl}?correlator=&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=window.location.origin&vpa=click&vpmute=1&wta=1`;
+        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
         adsRenderingSettings["useStyledNonLinearAds"] = true
@@ -145,7 +143,7 @@
       if (state == YT.PlayerState.PLAYING) {
         time = player.getCurrentTime()
         webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
-        console.log("[play.html] updateTime " + time);
+        // console.log("[play.html] updateTime " + time);
       }
     }
 

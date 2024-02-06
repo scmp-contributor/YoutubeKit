@@ -69,6 +69,8 @@ open class YTSwiftyPlayer: WKWebView {
 
     private var playerVars: [String: AnyObject] = [:]
 
+    open var customTargeting: [String: String] = [:]
+
     private var adTag: String?
 
     private let callbackHandlers: [YTSwiftyPlayerEvent] = [
@@ -91,7 +93,7 @@ open class YTSwiftyPlayer: WKWebView {
         return config
     }
 
-    public init(frame: CGRect = .zero, playerVars: [String: AnyObject], adTag: String?) {
+  public init(frame: CGRect = .zero, playerVars: [String: AnyObject], adTag: String?, customTargeting: [String : String]) {
         let config = YTSwiftyPlayer.defaultConfiguration
         if let allowsInlineStr = playerVars[VideoEmbedParameter.playsInline(false).key] as? String, allowsInlineStr == "0" {
           config.allowsInlineMediaPlayback = false
@@ -117,13 +119,15 @@ open class YTSwiftyPlayer: WKWebView {
 
         self.playerVars = playerVars
         self.adTag = adTag
+        self.customTargeting = customTargeting
     }
 
-    public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil) {
+  public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil, customTargeting: [String : String]) {
       self.init(
         frame: frame,
         playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars),
-        adTag: adTag)
+        adTag: adTag,
+        customTargeting: customTargeting)
     }
 
     required public init?(coder: NSCoder) {
@@ -237,6 +241,8 @@ open class YTSwiftyPlayer: WKWebView {
     }
 
     public func loadPlayer(with playerConfiguration: YTSwiftyPlayerConfiguration) {
+      print("[YTSwiftyPlayer] loadPlayer customTargeting: \(self.customTargeting)")
+
         let events: [String: AnyObject] = {
             var registerEvents: [String: AnyObject] = [:]
           callbackHandlers.forEach {
@@ -263,16 +269,49 @@ open class YTSwiftyPlayer: WKWebView {
         let htmlProvider = YTSwiftyPlayerHTMLProvider(
           playerOptions: parameters,
           playerParameters: playerVars,
-          embedConfigParameters: embedConfig ?? [:],
-          gaClientId: playerConfiguration.gaClientId)
+          embedConfigParameters: embedConfig ?? [:])
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
-        let htmlString = html.replacingOccurrences(of: YTSwiftyPlayerHTMLProvider.ReplacementKeys.adTag,
-                                                   with: self.adTag ?? "")
+      var htmlString = html.replacingOccurrences(of: YTSwiftyPlayerHTMLProvider.ReplacementKeys.adTag,
+                                                 with: self.adTag ?? "")
+      htmlString = htmlString.replacingOccurrences(of: YTSwiftyPlayerHTMLProvider.ReplacementKeys.custParams,
+                                             with: self.customTargetingString)
         currentPlayerConfiguration = playerConfiguration
         loadHTMLString(htmlString, baseURL: playerConfiguration.referrer)
     }
 
     // MARK: - Private Methods
+
+  private var customTargetingString: String {
+
+    let articletype = customTargeting["articletype"] ?? ""
+    let paid = customTargeting["paid"] ?? ""
+    let scnid = customTargeting["scnid"] ?? ""
+    let scsid = customTargeting["scsid"] ?? ""
+    let sctid = customTargeting["sctid"] ?? ""
+    let sentiment_max = customTargeting["sentiment_max"] ?? ""
+    let sentiment_min = customTargeting["sentiment_min"] ?? ""
+    let avg_first_second = customTargeting["avg_first_second"] ?? ""
+    let avg_sent_1_5 = customTargeting["avg_sent_1_5"] ?? ""
+    let headline_score = customTargeting["headline_score"] ?? ""
+    let sentiment_category = customTargeting["sentiment_category"] ?? ""
+    let readability_school_level = customTargeting["readability_school_level"] ?? ""
+    let gs_adult = customTargeting["gs_adult"] ?? ""
+    let gs_hkprotests = customTargeting["gs_hkprotests"] ?? ""
+    let gs_violence = customTargeting["gs_violence"] ?? ""
+    let gs_terrorism = customTargeting["gs_terrorism"] ?? ""
+    let gs_tobacco = customTargeting["gs_tobacco"] ?? ""
+    let gs_tragedy = customTargeting["gs_tragedy"] ?? ""
+    let gs_offensive_language = customTargeting["gs_offensive_language"] ?? ""
+    let gs_client1 = customTargeting["gs_client1"] ?? ""
+    let gs_client2 = customTargeting["gs_client2"] ?? ""
+    let gs_client3 = customTargeting["gs_client3"] ?? ""
+    let ga_id = customTargeting["ga_id"] ?? ""
+    let uuid = customTargeting["uuid"] ?? ""
+    let yt_embed_ima = customTargeting["yt_embed_ima"] ?? ""
+    let mappedString =  "articletype=\(articletype)&paid=\(paid)&scnid=\(scnid)&scsid=\(scsid)&sctid=\(sctid)&sentiment_max=\(sentiment_max)&sentiment_min=\(sentiment_min)&avg_first_second=\(avg_first_second)&avg_sent_1_5=\(avg_sent_1_5)&headline_score=\(headline_score)&sentiment_category=\(sentiment_category)&readability_school_level=\(readability_school_level)&gs_adult=\(gs_adult)&gs_hkprotests=\(gs_hkprotests)&gs_violence=\(gs_violence)&gs_terrorism=\(gs_terrorism)&gs_tobacco=\(gs_tobacco)&gs_tragedy=\(gs_tragedy)&gs_offensive_language=\(gs_offensive_language)&gs_client1=\(gs_client1)&gs_client2=\(gs_client2)&gs_client3=\(gs_client3)&ga_id=\(ga_id)&uuid=\(uuid)&yt_embed_ima=\(yt_embed_ima)"
+
+    return mappedString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
+  }
 
     private func commonInit() {
         scrollView.bounces = false

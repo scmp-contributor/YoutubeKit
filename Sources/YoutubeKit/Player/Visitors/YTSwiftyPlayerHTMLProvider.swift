@@ -13,17 +13,16 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
   struct ReplacementKeys {
     static let videoId = "{video-id}"
     static let playerOptions = "{player-options}"
-    static let gaClientId = "{ga-client-id}"
     static let viewportInitialScale = "{viewport-initial-scale}"
     static let iframeSrcQueryString = "{iframe-src-query-string}"
     static let getCurrentTimeInterval = "'{get-current-time-interval}'"
     static let adTag = "{ad-tag}"
+    static let custParams = "{cust-params}"
   }
 
   let playerOptions: [String: AnyObject]
   let playerParameters: [String: AnyObject]
   let embedConfigParameters: [String: AnyObject]
-  let gaClientId: String
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "player") else { return nil }
@@ -34,7 +33,6 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
 
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
-      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.gaClientId, with: configuration.gaClientId)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
 
