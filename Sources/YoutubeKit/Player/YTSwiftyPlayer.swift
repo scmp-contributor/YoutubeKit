@@ -148,6 +148,7 @@ open class YTSwiftyPlayer: WKWebView {
 
     public func stopVideo() {
         evaluatePlayerCommand("stopVideo()")
+      self.evaluateJavaScript("imaManager.getAdsManager().stop()")
     }
 
     public func seek(to seconds: Int, allowSeekAhead: Bool) {

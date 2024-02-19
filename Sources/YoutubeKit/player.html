@@ -32,6 +32,7 @@
     var time;
     var imaManager;
     var stateInterval;
+    var didRequsetAd = false;
 
     function onYouTubeIframeAPIReady() {
       console.log("[play.html] onYouTubeIframeAPIReady")
@@ -97,7 +98,9 @@
     }
 
     function makeAdsRequest(adsRequest, adsRenderingSettings) {
-
+      if (didRequsetAd == true) {
+        return;
+      }
       try {
         const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
         var adTag = '{ad-tag}';
@@ -109,12 +112,13 @@
         adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
-        adsRenderingSettings["useStyledNonLinearAds"] = true
-        adsRenderingSettings["enablePreloading"] = true
+        adsRenderingSettings["useStyledNonLinearAds"] = true;
+        adsRenderingSettings["enablePreloading"] = true;
         // Optional: you can also update other properties of the AdsRequest.
         // Optional: you can also update the adsRenderingSettings  object if needed.
         adsRenderingSettings["uiElements"] = [window.google.ima.UiElements.AD_ATTRIBUTION,
                                               window.google.ima.UiElements.COUNTDOWN];
+        didRequsetAd = true;
       } catch (err) {
         console.log("[play.html] makeAdsRequest catch error: " + err)
       }
