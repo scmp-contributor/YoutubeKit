@@ -118,8 +118,19 @@ open class YTSwiftyPlayer: WKWebView {
         commonInit()
 
         self.playerVars = playerVars
-        self.adTag = adTag
+
+        if let _adTag = adTag {
+          self.adTag = _adTag + "/instream1"
+        }
+
         self.customTargeting = customTargeting
+
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+          // allow debug in safari
+          isInspectable = true
+        }
+        #endif
     }
 
   public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil, customTargeting: [String : String]) {
@@ -289,8 +300,8 @@ open class YTSwiftyPlayer: WKWebView {
 
   private var customTargetingString: String {
 
-    let articletype = customTargeting["articletype"] ?? ""
-    let paid = customTargeting["paid"] ?? ""
+    let articletype = customTargeting["articletype"] ?? "DEFAULT"
+    let paid = customTargeting["paid"] ?? "1"
     let scnid = customTargeting["scnid"] ?? ""
     let scsid = customTargeting["scsid"] ?? ""
     let sctid = customTargeting["sctid"] ?? ""
@@ -313,9 +324,9 @@ open class YTSwiftyPlayer: WKWebView {
     let gs_client3 = customTargeting["gs_client3"] ?? ""
     let ga_id = customTargeting["ga_id"] ?? ""
     let uuid = customTargeting["uuid"] ?? ""
-    let yt_embed_ima = customTargeting["yt_embed_ima"] ?? ""
+    let yt_embed_ima = customTargeting["yt_embed_ima"] ?? "1"
     let mappedString =  "articletype=\(articletype)&paid=\(paid)&scnid=\(scnid)&scsid=\(scsid)&sctid=\(sctid)&sentiment_max=\(sentiment_max)&sentiment_min=\(sentiment_min)&avg_first_second=\(avg_first_second)&avg_sent_1_5=\(avg_sent_1_5)&headline_score=\(headline_score)&sentiment_category=\(sentiment_category)&readability_school_level=\(readability_school_level)&gs_adult=\(gs_adult)&gs_hkprotests=\(gs_hkprotests)&gs_violence=\(gs_violence)&gs_terrorism=\(gs_terrorism)&gs_tobacco=\(gs_tobacco)&gs_tragedy=\(gs_tragedy)&gs_offensive_language=\(gs_offensive_language)&gs_client1=\(gs_client1)&gs_client2=\(gs_client2)&gs_client3=\(gs_client3)&ga_id=\(ga_id)&uuid=\(uuid)&yt_embed_ima=\(yt_embed_ima)"
-
+    print("[YTSwiftyPlayer] cust-params: \(mappedString)")
     return mappedString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
   }
 
@@ -356,7 +367,9 @@ extension YTSwiftyPlayer: WKScriptMessageHandler {
         return
       }
         guard let event = YTSwiftyPlayerEvent(rawValue: message.name) else { return }
+        if event != .onUpdateCurrentTime {
         print("[YTSwiftyPlayer] didReceive event: \(event)")
+      }
 
         switch event {
         case .onReady:

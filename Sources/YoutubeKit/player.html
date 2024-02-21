@@ -23,11 +23,10 @@
 
 <body>
   <script src="https://imasdk.googleapis.com/js/sdkloader/ima3_debug.js"></script>
-  <script src="https://www.youtube.com/iframe_api?ima=1"
-    onerror="webkit.messageHandlers.onYouTubeIframeAPIFailedToLoad.postMessage('')"></script>
+  <script src="https://www.youtube.com/iframe_api?ima=1"></script>
   <div id="player"></div>
 
-  <script>
+  <script type="text/javascript">
     var player;
     var time;
     var imaManager;
@@ -36,7 +35,6 @@
 
     function onYouTubeIframeAPIReady() {
       console.log("[play.html] onYouTubeIframeAPIReady")
-
 
       try {
         var options = {player-options};
@@ -61,7 +59,7 @@
     }
 
     function onReady(event) {
-      console.log("[play.html] onReady: " + JSON.stringify(event))
+      // console.log("[play.html] onReady: " + JSON.stringify(event))
       webkit.messageHandlers.onReady.postMessage(event.data);
     }
 
@@ -69,7 +67,7 @@
       try {
         webkit.messageHandlers.onStateChange.postMessage(event.data);
         var state = player.getPlayerState();
-        console.log("[play.html] onStateChange: " + state)
+        // console.log("[play.html] onStateChange: " + state)
         if (state == YT.PlayerState.PLAYING) {
           stateInterval = window.setInterval(updateTime, '{get-current-time-interval}');
         } else {
@@ -81,11 +79,11 @@
       }
     }
     function onPlaybackQualityChange(event) {
-      console.log("[play.html] onPlaybackQualityChange")
+      // console.log("[play.html] onPlaybackQualityChange")
       webkit.messageHandlers.onPlaybackQualityChange.postMessage(event.data);
     }
     function onPlaybackRateChange(event) {
-      console.log("[play.html] onPlaybackRateChange")
+      // console.log("[play.html] onPlaybackRateChange")
       webkit.messageHandlers.onPlaybackRateChange.postMessage(event.data);
     }
     function onPlayerError(event) {
@@ -93,12 +91,13 @@
       webkit.messageHandlers.onError.postMessage(event.data);
     }
     function onApiChange(event) {
-      console.log("[play.html] onApiChange")
+      // console.log("[play.html] onApiChange")
       webkit.messageHandlers.onApiChange.postMessage(event.data);
     }
 
     function makeAdsRequest(adsRequest, adsRenderingSettings) {
       if (didRequsetAd == true) {
+        console.log("[play.html] didRequsetAd before")
         return;
       }
       try {
@@ -109,7 +108,7 @@
         console.log("[play.html] makeAdsRequest cust-params: " + customTargeting)
         // cspell: ignore instream gdfp tfcd unviewed vpmute
         // Required
-        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
+        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=auto&vpmute=1&wta=1`;
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
         adsRenderingSettings["useStyledNonLinearAds"] = true;
@@ -132,7 +131,7 @@
       player = plyr;
       imaManager = ima;
       webkit.messageHandlers.onReady.postMessage('');
-      console.log("[play.html] onPlayerReady")
+      // console.log("[play.html] onPlayerReady")
     }
 
     function updateTime() {
