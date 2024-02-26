@@ -154,12 +154,21 @@ open class YTSwiftyPlayer: WKWebView {
     }
 
     public func playVideo() {
-        evaluatePlayerCommand("playVideo()")
+      evaluateJavaScript("playVideo()") { (result, error) in
+          if error != nil {
+            print("[YTSwiftyPlayer] playVideo error: \(error.debugDescription)")
+              return
+          }
+      }
     }
 
     public func stopVideo() {
-        evaluatePlayerCommand("stopVideo()")
-      self.evaluateJavaScript("imaManager.getAdsManager().stop()")
+      evaluateJavaScript("stopVideo()") { (result, error) in
+          if error != nil {
+            print("[YTSwiftyPlayer] stopVideo error: \(error.debugDescription)")
+              return
+          }
+      }
     }
 
     public func seek(to seconds: Int, allowSeekAhead: Bool) {
@@ -167,12 +176,12 @@ open class YTSwiftyPlayer: WKWebView {
     }
 
     public func pauseVideo() {
-        evaluatePlayerCommand("pauseVideo()")
-        evaluateJavaScript("imaManager.getAdsManager().getRemainingTime() > 0") { [weak self] (result, error) in
-            if error == nil {
-                self?.evaluateJavaScript("imaManager.getAdsManager().pause()")
-            }
-        }
+      evaluateJavaScript("pauseVideo()") { (result, error) in
+          if error != nil {
+            print("[YTSwiftyPlayer] pauseVideo error: \(error.debugDescription)")
+              return
+          }
+      }
     }
 
     public func clearVideo() {

@@ -23,10 +23,15 @@
 
 <body>
   <script src="https://imasdk.googleapis.com/js/sdkloader/ima3_debug.js"></script>
-  <script src="https://www.youtube.com/iframe_api?ima=1"></script>
   <div id="player"></div>
 
-  <script type="text/javascript">
+  <script>
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api?ima=1";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     var player;
     var time;
     var imaManager;
@@ -37,8 +42,9 @@
       console.log("[play.html] onYouTubeIframeAPIReady")
 
       try {
+
         var options = {player-options};
-        delete options['embedConfig'];
+        // delete options['embedConfig'];
         delete options['events']['onReady'];
         console.log("[play.html] onYouTubeIframeAPIReady options: " + JSON.stringify(options));
         webkit.messageHandlers.onYouTubeIframeAPIReady.postMessage('');
@@ -56,6 +62,15 @@
       catch (err) {
         console.log("[play.html] onYouTubeIframeAPIReady catch error: " + err)
       }
+
+      try {
+        document.getElementById('player').getElementsByTagName('iframe')[0].addEventListener('fullscreenchange', callback);
+        document.getElementById('player').getElementsByTagName('iframe')[0].addEventListener('webkitfullscreenchange', callback);
+        console.log("[play.html] vvvvv addEventListener done")
+      } catch (err) {
+        console.log("[play.html] vvvvv addEventListener catch error: " + err)
+      }
+
     }
 
     function onReady(event) {
@@ -72,6 +87,25 @@
           stateInterval = window.setInterval(updateTime, '{get-current-time-interval}');
         } else {
           clearInterval(stateInterval);
+
+          // checked with Kenny, ignoring the issue about ad playing in original view (not full screen) when video entering second ad in full screen. (youtube iframe DOES NOT support full-screen envent in ios)
+          return;
+
+          var adsManager = imaManager.getAdsManager();
+          let hasCurrentAd = (adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null);
+
+          if (state == YT.PlayerState.PAUSED) {
+            if (hasCurrentAd) {
+
+              var isFullScreen = player.getElementsByTagName("video")[0].webkitDisplayingFullscreen;
+              console.log("[play.html] onStateChange isFullScreen: " + isFullScreen);
+              if (isFullScreen) {
+                player.getElementsByTagName("video")[0].webkitExitFullscreen();
+              } else {
+                console.log('[play.html] onStateChange is not Fullscreen');
+              }
+            }
+          }
         }
 
       } catch (err) {
@@ -108,7 +142,7 @@
         console.log("[play.html] makeAdsRequest cust-params: " + customTargeting)
         // cspell: ignore instream gdfp tfcd unviewed vpmute
         // Required
-        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=auto&vpmute=1&wta=1`;
+        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
         adsRenderingSettings["useStyledNonLinearAds"] = true;
@@ -132,6 +166,7 @@
       imaManager = ima;
       webkit.messageHandlers.onReady.postMessage('');
       // console.log("[play.html] onPlayerReady")
+
     }
 
     function updateTime() {
@@ -147,6 +182,31 @@
         time = player.getCurrentTime()
         webkit.messageHandlers.onUpdateCurrentTime.postMessage(time);
         // console.log("[play.html] updateTime " + time);
+      }
+    }
+
+    function playVideo() {
+      var adsManager = imaManager.getAdsManager();
+      if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
+        imaManager.getAdsManager().resume()
+      } else {
+        player.playVideo();
+      }
+    }
+
+    function pauseVideo() {
+      player.pauseVideo();
+      var adsManager = imaManager.getAdsManager();
+      if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
+        imaManager.getAdsManager().pause();
+      }
+    }
+
+    function stopVideo() {
+      player.stopVideo();
+      var adsManager = imaManager.getAdsManager();
+      if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
+        imaManager.getAdsManager().stop();
       }
     }
 
