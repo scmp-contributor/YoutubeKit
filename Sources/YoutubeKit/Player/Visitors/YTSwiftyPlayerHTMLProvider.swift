@@ -18,11 +18,13 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
     static let getCurrentTimeInterval = "'{get-current-time-interval}'"
     static let adTag = "{ad-tag}"
     static let custParams = "{cust-params}"
+    static let shouldRequsetAd = "{should-requset-ad}"
   }
 
   let playerOptions: [String: AnyObject]
   let playerParameters: [String: AnyObject]
   let embedConfigParameters: [String: AnyObject]
+  let shouldRequsetAd: Bool
 
   func forGeneralPlayer(_ configuration: GeneralPlayerConfiguration) -> String? {
     guard var htmlString = YTSwiftyPlayerHTMLProvider.getHTMLString(forName: "player") else { return nil }
@@ -33,6 +35,7 @@ struct YTSwiftyPlayerHTMLProvider: YTSwiftyPlayerConfigurationVisitor {
 
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.videoId, with: configuration.videoID)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.playerOptions, with: jsonString)
+      htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.shouldRequsetAd, with: shouldRequsetAd.description)
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.viewportInitialScale, with: String(format: "%.2f", configuration.viewportInitialScale))
       htmlString = htmlString.replacingOccurrences(of: ReplacementKeys.getCurrentTimeInterval, with: String(format: "%.1f", configuration.getCurrentTimeSchedulerInterval * 1000))
 

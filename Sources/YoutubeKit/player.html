@@ -36,6 +36,7 @@
     var time;
     var imaManager;
     var stateInterval;
+    var shouldRequsetAd = {should-requset-ad};
     var didRequsetAd = false;
 
     function onYouTubeIframeAPIReady() {
@@ -130,8 +131,8 @@
     }
 
     function makeAdsRequest(adsRequest, adsRenderingSettings) {
-      if (didRequsetAd == true) {
-        console.log("[play.html] didRequsetAd before")
+      if (didRequsetAd == true || shouldRequsetAd == false) {
+        console.log("[play.html] will not request ad ")
         return;
       }
       try {

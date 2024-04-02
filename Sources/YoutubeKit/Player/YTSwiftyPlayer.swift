@@ -73,6 +73,8 @@ open class YTSwiftyPlayer: WKWebView {
 
     private var adTag: String?
 
+    private let shouldRequsetAd: Bool
+
     private let callbackHandlers: [YTSwiftyPlayerEvent] = [
         .onYoutubeIframeAPIReady,
         .onYouTubeIframeAPIFailedToLoad,
@@ -93,7 +95,7 @@ open class YTSwiftyPlayer: WKWebView {
         return config
     }
 
-  public init(frame: CGRect = .zero, playerVars: [String: AnyObject], adTag: String?, customTargeting: [String : String]) {
+  public init(frame: CGRect = .zero, playerVars: [String: AnyObject], adTag: String?, customTargeting: [String : String], shouldRequsetAd: Bool) {
         let config = YTSwiftyPlayer.defaultConfiguration
         if let allowsInlineStr = playerVars[VideoEmbedParameter.playsInline(false).key] as? String, allowsInlineStr == "0" {
           config.allowsInlineMediaPlayback = false
@@ -102,6 +104,7 @@ open class YTSwiftyPlayer: WKWebView {
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
 
+        self.shouldRequsetAd = shouldRequsetAd
         super.init(frame: frame, configuration: config)
 
         // inject JS to capture console.log output and send to iOS
@@ -133,12 +136,13 @@ open class YTSwiftyPlayer: WKWebView {
         #endif
     }
 
-  public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil, customTargeting: [String : String]) {
+  public convenience init(frame: CGRect = .zero, playerVars: [VideoEmbedParameter] = [], adTag: String? = nil, customTargeting: [String : String], shouldRequsetAd: Bool) {
       self.init(
         frame: frame,
         playerVars: YTSwiftyPlayer.convertPlayerParameters(playerVars),
         adTag: adTag,
-        customTargeting: customTargeting)
+        customTargeting: customTargeting,
+        shouldRequsetAd: shouldRequsetAd)
     }
 
     required public init?(coder: NSCoder) {
@@ -295,7 +299,8 @@ open class YTSwiftyPlayer: WKWebView {
         let htmlProvider = YTSwiftyPlayerHTMLProvider(
           playerOptions: parameters,
           playerParameters: playerVars,
-          embedConfigParameters: embedConfig ?? [:])
+          embedConfigParameters: embedConfig ?? [:],
+          shouldRequsetAd: shouldRequsetAd)
         guard let html = playerConfiguration.accept(visitor: htmlProvider) else { return }
       var htmlString = html.replacingOccurrences(of: YTSwiftyPlayerHTMLProvider.ReplacementKeys.adTag,
                                                  with: self.adTag ?? "")

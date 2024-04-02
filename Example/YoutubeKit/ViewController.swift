@@ -26,8 +26,9 @@ final class ViewController: UIViewController {
       playerVars: [
         .playsInline(true),
         .showRelatedVideo(false)
-      ], customTargeting: [:])
-    
+      ], customTargeting: [:], 
+      shouldRequsetAd: true)
+
     // Enable auto playback when video is loaded
     player.autoplay = false
     
