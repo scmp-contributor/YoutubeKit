@@ -38,6 +38,7 @@
     var stateInterval;
     var shouldRequsetAd = {should-requset-ad};
     var didRequsetAd = false;
+    var playPadding = false;
 
     function onYouTubeIframeAPIReady() {
       console.log("[play.html] onYouTubeIframeAPIReady")
@@ -75,7 +76,7 @@
     }
 
     function onReady(event) {
-      // console.log("[play.html] onReady: " + JSON.stringify(event))
+      console.log("[play.html] onReady: " + JSON.stringify(event))
       webkit.messageHandlers.onReady.postMessage(event.data);
     }
 
@@ -83,11 +84,15 @@
       try {
         webkit.messageHandlers.onStateChange.postMessage(event.data);
         var state = player.getPlayerState();
-        // console.log("[play.html] onStateChange: " + state)
+        console.log("[play.html] onStateChange: " + state)
         if (state == YT.PlayerState.PLAYING) {
+          playPadding = false;
           stateInterval = window.setInterval(updateTime, '{get-current-time-interval}');
         } else {
           clearInterval(stateInterval);
+          if (playPadding) {
+            player.playVideo()
+          }
 
           // checked with Kenny, ignoring the issue about ad playing in original view (not full screen) when video entering second ad in full screen. (youtube iframe DOES NOT support full-screen envent in ios)
           return;
@@ -166,7 +171,7 @@
       player = plyr;
       imaManager = ima;
       webkit.messageHandlers.onReady.postMessage('');
-      // console.log("[play.html] onPlayerReady")
+      console.log("[play.html] onPlayerReady")
 
     }
 
@@ -190,8 +195,16 @@
       var adsManager = imaManager.getAdsManager();
       if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
         imaManager.getAdsManager().resume()
+        console.log("[play.html] adsManager resume")
+      } else if (!shouldRequsetAd && player.getPlayerState() == YT.PlayerState.CUED) {
+          console.log("[play.html] player state is CUED")
+          // if player's state is showing info, it should remove info by calling playVide().
+          // After player state is Padding, call playVideo again.
+          playPadding = true;
+          player.playVideo();
       } else {
         player.playVideo();
+        console.log("[play.html] playVideo")
       }
     }
 
