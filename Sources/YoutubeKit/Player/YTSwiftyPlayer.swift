@@ -339,7 +339,9 @@ open class YTSwiftyPlayer: WKWebView {
     let ga_id = customTargeting["ga_id"] ?? ""
     let uuid = customTargeting["uuid"] ?? ""
     let yt_embed_ima = customTargeting["yt_embed_ima"] ?? "1"
-    let mappedString =  "articletype=\(articletype)&paid=\(paid)&scnid=\(scnid)&scsid=\(scsid)&sctid=\(sctid)&sentiment_max=\(sentiment_max)&sentiment_min=\(sentiment_min)&avg_first_second=\(avg_first_second)&avg_sent_1_5=\(avg_sent_1_5)&headline_score=\(headline_score)&sentiment_category=\(sentiment_category)&readability_school_level=\(readability_school_level)&gs_adult=\(gs_adult)&gs_hkprotests=\(gs_hkprotests)&gs_violence=\(gs_violence)&gs_terrorism=\(gs_terrorism)&gs_tobacco=\(gs_tobacco)&gs_tragedy=\(gs_tragedy)&gs_offensive_language=\(gs_offensive_language)&gs_client1=\(gs_client1)&gs_client2=\(gs_client2)&gs_client3=\(gs_client3)&ga_id=\(ga_id)&uuid=\(uuid)&yt_embed_ima=\(yt_embed_ima)"
+    let v_video = customTargeting["v_video"] ?? ""
+      
+    let mappedString =  "articletype=\(articletype)&paid=\(paid)&scnid=\(scnid)&scsid=\(scsid)&sctid=\(sctid)&sentiment_max=\(sentiment_max)&sentiment_min=\(sentiment_min)&avg_first_second=\(avg_first_second)&avg_sent_1_5=\(avg_sent_1_5)&headline_score=\(headline_score)&sentiment_category=\(sentiment_category)&readability_school_level=\(readability_school_level)&gs_adult=\(gs_adult)&gs_hkprotests=\(gs_hkprotests)&gs_violence=\(gs_violence)&gs_terrorism=\(gs_terrorism)&gs_tobacco=\(gs_tobacco)&gs_tragedy=\(gs_tragedy)&gs_offensive_language=\(gs_offensive_language)&gs_client1=\(gs_client1)&gs_client2=\(gs_client2)&gs_client3=\(gs_client3)&ga_id=\(ga_id)&uuid=\(uuid)&yt_embed_ima=\(yt_embed_ima)&v_video=\(v_video)"
     print("[YTSwiftyPlayer] cust-params: \(mappedString)")
     return mappedString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
   }
