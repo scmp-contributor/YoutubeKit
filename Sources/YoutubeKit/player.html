@@ -146,9 +146,14 @@
         var customTargeting = '{cust-params}';
         console.log("[play.html] makeAdsRequest adTag: " + adTag)
         console.log("[play.html] makeAdsRequest cust-params: " + customTargeting)
+        var size = "400x300|480x70|480x360|480x361|640x480";
+        var isVerticalYoutube = new URLSearchParams(decodeURIComponent(customTargeting)).get("v_video") == "true";
+        if(isVerticalYoutube) {
+          size = size.concat("|360x480|480x640|361x480")
+        }
         // cspell: ignore instream gdfp tfcd unviewed vpmute
         // Required
-        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=400x300|480x70|480x360|480x361|640x480&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
+        adsRequest.adTagUrl = `${adUrl}?correlator=&cust-params=${customTargeting}&env=instream&gdfp_req=1&impl=s&iu=${adTag}&npa=0&output=vast&sz=${size}&tfcd=0&unviewed_position_start=1&url=${window.location.origin}&vpa=click&vpmute=1&wta=1`;
         console.log("[play.html] makeAdsRequest adTagUrl: " + adsRequest.adTagUrl)
         // Recommended
         adsRenderingSettings["useStyledNonLinearAds"] = true;
